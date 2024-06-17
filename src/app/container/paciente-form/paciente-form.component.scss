@@ -1,0 +1,41 @@
+.full-filled{
+  width: 45%;
+}
+
+mat-card-content{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+form{
+  display: flex;
+  flex-direction: column;
+}
+
+.first-card{
+  width: 100%
+}
+#criticalHealth{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary{
+  width: 50%;
+}
+
+.container-button{
+  display: flex;
+  justify-content: center;
+}
+
+
+.result-tab{
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

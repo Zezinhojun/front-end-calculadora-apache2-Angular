@@ -1,0 +1,16 @@
+<mat-toolbar color="primary" class="navbar-toolbar">
+  <span>Calculadora Apache II</span>
+  <div class="navbar-buttons">
+    @if (isLoggedin) {
+    <button mat-button routerLink="/dashboard">Dashboard</button>
+    <button mat-button (click)="logout()">Logout</button>
+    }@else {
+    <button mat-button routerLink="/login">Login</button>
+    <button mat-button routerLink="/register">Register</button>
+    }
+  </div>
+</mat-toolbar>
+
+<main class="container">
+  <router-outlet></router-outlet>
+</main>
