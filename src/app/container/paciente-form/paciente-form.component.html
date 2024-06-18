@@ -21,13 +21,12 @@
             <input #input type="text" placeholder="Pick one" matInput [formControl]="myControl" [matAutocomplete]="auto"
               (input)="filter()" (focus)="filter()" formControlName="patologia">
             <mat-hint>3º</mat-hint>
-            <mat-autocomplete requireSelection #auto="matAutocomplete">
+            <mat-autocomplete requireSelection #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
               @for (option of filteredOptions; track option) {
               <mat-option [value]="option">{{option}}</mat-option>
               }
             </mat-autocomplete>
           </mat-form-field>
-
 
           <mat-form-field class="full-filled">
             <mat-label>Data de internação</mat-label>
@@ -48,7 +47,7 @@
           <!-- Temperatura (Graus C) -->
           <mat-form-field class="full-filled">
             <mat-label>Diagnóstico GLIM</mat-label>
-            <mat-hint>10º</mat-hint>
+            <mat-hint>6º</mat-hint>
             <mat-select formControlName="dignosticoGlim">
               <mat-option value="1">Sem desnutrição (1)</mat-option>
               <mat-option value="2">Desnutrição moderada - Relacionada à doença crônica com
@@ -82,7 +81,7 @@
 
           <mat-form-field class="full-filled">
             <mat-label>Sexo</mat-label>
-            <mat-hint>7º</mat-hint>
+            <mat-hint>8º</mat-hint>
             <mat-select formControlName="sexo">
               <mat-option value="0">Feminino</mat-option>
               <mat-option value="1">Masculino</mat-option>
@@ -91,8 +90,8 @@
 
           <mat-form-field class="full-filled">
             <mat-label>Tempo de internação na UTI</mat-label>
-            <mat-hint>8º</mat-hint>
-            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker">
+            <mat-hint>9º</mat-hint>
+            <mat-date-range-input formGroupName="campaignOne" [rangePicker]="campaignOnePicker">
               <input matStartDate placeholder="Data de inicio" formControlName="start">
               <input matEndDate placeholder="Data final" formControlName="end">
             </mat-date-range-input>
@@ -102,8 +101,8 @@
 
           <mat-form-field class="full-filled">
             <mat-label>Falencia grave de órgão/imunossupressão</mat-label>
-            <mat-hint>9º</mat-hint>
-            <mat-select>
+            <mat-hint>10º</mat-hint>
+            <mat-select formControlName="falenciaOrImuno">
               <mat-option value="0">Não</mat-option>
               <mat-option value="1">Sim</mat-option>
             </mat-select>
@@ -112,8 +111,8 @@
           <!-- Temperatura (Graus C) -->
           <mat-form-field class="full-filled">
             <mat-label>Temperatura (Graus C)</mat-label>
-            <mat-hint>10º</mat-hint>
-            <mat-select>
+            <mat-hint>11º</mat-hint>
+            <mat-select formControlName="temperatura">
               <mat-option value="4">>= 41 (4 pontos)</mat-option>
               <mat-option value="3">39 a 40.9 (3 pontos)</mat-option>
               <mat-option value="1">38.5 a 38.9 (1 pontos)</mat-option>
@@ -127,8 +126,8 @@
           <!-- Pressao arterial média -->
           <mat-form-field class="full-filled">
             <mat-label>Pressão arterial média (mmHg)</mat-label>
-            <mat-hint>11º</mat-hint>
-            <mat-select>
+            <mat-hint>12º</mat-hint>
+            <mat-select formControlName="pressao">
               <mat-option value="4">>= 160 (4 pontos)</mat-option>
               <mat-option value="3">130 a 159 (3 pontos)</mat-option>
               <mat-option value="2">110 a 129 (2 pontos)</mat-option>
@@ -142,8 +141,8 @@
           <!-- Frequência cardíaca -->
           <mat-form-field class="full-filled">
             <mat-label>Frequência cardíaca</mat-label>
-            <mat-hint>12º</mat-hint>
-            <mat-select>
+            <mat-hint>13º</mat-hint>
+            <mat-select formControlName="freqCardiaca">
               <mat-option value="4">>= 180 (4 pontos)</mat-option>
               <mat-option value="3">140 a 179 (3 pontos)</mat-option>
               <mat-option value="2">110 a 139 (2 pontos)</mat-option>
@@ -158,8 +157,8 @@
           <!-- Frequência respiratória -->
           <mat-form-field class="full-filled">
             <mat-label>Frequência respiratória</mat-label>
-            <mat-hint>13º</mat-hint>
-            <mat-select>
+            <mat-hint>14º</mat-hint>
+            <mat-select formControlName="freqRespiratoria">
               <mat-option value="4">>= 50 (4 pontos)</mat-option>
               <mat-option value="3">35 a 49 (3 pontos)</mat-option>
               <mat-option value="1">25 a 34 (1 pontos)</mat-option>
@@ -174,8 +173,8 @@
           <!-- A-aPO2 (FiO2>50%) ou PaO2 (FiO2<50%) -->
           <mat-form-field class="full-filled">
             <mat-label>A-aPO2 (FiO2>50%) ou PaO2 (FiO2 < 50%)</mat-label>
-                <mat-hint>14º</mat-hint>
-                <mat-select>
+                <mat-hint>15º</mat-hint>
+                <mat-select formControlName="pao2">>
                   <mat-option value="4">>= 500 (4 pontos)</mat-option>
                   <mat-option value="3">350 a 499 (3 pontos)</mat-option>
                   <mat-option value="2">200 a 349 (2 pontos)</mat-option>
@@ -191,8 +190,8 @@
           <!-- pH ou HCO3 -->
           <mat-form-field class="full-filled">
             <mat-label>pH ou HCO3</mat-label>
-            <mat-hint>15º</mat-hint>
-            <mat-select>
+            <mat-hint>16º</mat-hint>
+            <mat-select formControlName="phOrHco3">>
               <mat-option value="4"> arterial >= 7.7; >= 52 (4 pontos)</mat-option>
               <mat-option value="3">7.6 a 7.69 ; 41 a 51.9 (3 pontos)</mat-option>
               <mat-option value="1">7.5 a 7.59 ; 32 a 40.9 (1 pontos)</mat-option>
@@ -207,8 +206,8 @@
           <!-- Na+ sérico (mEq/l) -->
           <mat-form-field class="full-filled">
             <mat-label>Na+ sérico (mEq/l)</mat-label>
-            <mat-hint>16º</mat-hint>
-            <mat-select>
+            <mat-hint>17º</mat-hint>
+            <mat-select formControlName="sodio">>
               <mat-option value="4"> >= 180 (4 pontos)</mat-option>
               <mat-option value="3">160 a 179 (3 pontos)</mat-option>
               <mat-option value="2">155 a 159 (2 pontos)</mat-option>
@@ -225,7 +224,7 @@
           <mat-form-field class="full-filled">
             <mat-label>K+ sérico (mEq/l)</mat-label>
             <mat-hint>17º</mat-hint>
-            <mat-select>
+            <mat-select formControlName="potassio">>
               <mat-option value="4"> >= 7 (4 pontos)</mat-option>
               <mat-option value="3">6 a 6.9 (3 pontos)</mat-option>
               <mat-option value="1">5.5 a 5.9 (1 pontos)</mat-option>
@@ -241,7 +240,7 @@
           <mat-form-field class="full-filled">
             <mat-label>Creatinina sérica (ARF significa insuficiência renal aguda)</mat-label>
             <mat-hint>18º</mat-hint>
-            <mat-select>
+            <mat-select formControlName="creatinina">>
               <mat-option value="4"> >= 3.5 (4 pontos)</mat-option>
               <mat-option value="8"> >= 3.5 na ARF (8 pontos)</mat-option>
               <mat-option value="3">2 a 3.4 (3 pontos)</mat-option>
@@ -257,8 +256,8 @@
           <!-- Hematócrito -->
           <mat-form-field class="full-filled">
             <mat-label>Hematócrito</mat-label>
-            <mat-hint>19º</mat-hint>
-            <mat-select>
+            <mat-hint>18º</mat-hint>
+            <mat-select formControlName="hematocrito">>
               <mat-option value="4"> >= 60 (4 pontos)</mat-option>
               <mat-option value="2"> 50 a 59.9 (2 pontos)</mat-option>
               <mat-option value="1">46 a 49.9 (1 pontos)</mat-option>
@@ -272,8 +271,8 @@
           <!-- Contagem de WBC - leucócitos - (10^9/l) -->
           <mat-form-field class="full-filled">
             <mat-label>Contagem de WBC - leucócitos - (10^9/l)</mat-label>
-            <mat-hint>20º</mat-hint>
-            <mat-select>
+            <mat-hint>19º</mat-hint>
+            <mat-select formControlName="leucocitos">>
               <mat-option value="4"> >= 40 (4 pontos)</mat-option>
               <mat-option value="2"> 20 a 39.9 (2 pontos)</mat-option>
               <mat-option value="1">15 a 19.9 (1 pontos)</mat-option>
@@ -287,8 +286,8 @@
           <!-- Escala Glasgow -->
           <mat-form-field class="full-filled">
             <mat-label>Escala Glasgow</mat-label>
-            <mat-hint>21º</mat-hint>
-            <mat-select>
+            <mat-hint>20º</mat-hint>
+            <mat-select formControlName="glasgow">>
               <mat-option value="0"> 15 (0 pontos)</mat-option>
               <mat-option value="1"> 14 (1 pontos)</mat-option>
               <mat-option value="2"> 13 (2 pontos)</mat-option>
@@ -309,8 +308,8 @@
           <!-- Idade (anos) -->
           <mat-form-field class="full-filled">
             <mat-label>Idade (anos)</mat-label>
-            <mat-hint>22º</mat-hint>
-            <mat-select>
+            <mat-hint>21º</mat-hint>
+            <mat-select formControlName="ageApache">
               <mat-option value="6"> >= 75 (6 pontos)</mat-option>
               <mat-option value="5"> 65 a 75 (5 pontos)</mat-option>
               <mat-option value="3"> 55 a 64 (3 pontos)</mat-option>
@@ -324,8 +323,8 @@
             New York Heart Association 3) DPOC severa -- hipercapnia, uso de O2 domiciliar, ou hipertensão pulmonar 4)
             Em
             diálise regular ou 5) Imunodeprimido</span>
-          <mat-hint>23º</mat-hint>
-          <mat-radio-group id="criticalHealth"
+          <mat-hint>22º</mat-hint>
+          <mat-radio-group id="criticalHealth" formControlName="criticalHealth"
             aria-label="Problemas de saúde crônicos: 1) Cirrose do fígado confirmada por biópsia 2) Classe IV da New York Heart Association 3) DPOC severa -- hipercapnia, uso de O2 domiciliar, ou hipertensão pulmonar 4) Em diálise regular ou 5) Imunodeprimido">
             <mat-radio-button value="0">nenhum (0 pontos)</mat-radio-button>
             <mat-radio-button value="5">não cirúrgico (5 pontos)</mat-radio-button>
@@ -336,7 +335,7 @@
         </mat-card-content>
         <mat-card>
           <mat-card-content>
-            <h2>Contagem de pontos, critérios totais:</h2>
+            <h2>Contagem de pontos, critérios totais: {{totalSoma}}</h2>
           </mat-card-content>
         </mat-card>
         <div class="result-tab">

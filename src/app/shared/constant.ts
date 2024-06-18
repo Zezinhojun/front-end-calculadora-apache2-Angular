@@ -8,6 +8,17 @@ export const ApiEndpoint = {
   }
 }
 
+export const ApiGoogleSheetsEndpoint = {
+  GoogleSheets: {
+    Metadata: `${apiUrls}/googlesheets/metadata`,
+    Rows: `${apiUrls}/googlesheets/rows`,
+    Patology: `${apiUrls}/googlesheets/patology`,
+    CreateRow: `${apiUrls}/googlesheets/addrow`,
+    Updatevalue: `${apiUrls}/googlesheets/updatevalue`,
+    DeleteRow: `${apiUrls}/googlesheets/dashboard/delete`,
+  }
+}
+
 export const LocalStorage = {
   token: 'USER_TOKEN'
 }
