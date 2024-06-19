@@ -4,9 +4,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../shared/services/auth.service';
+import { FormUtilsService } from '../../shared/services/form/form-utils.service';
 
 
 @Component({
@@ -23,9 +25,13 @@ import { AuthService } from '../../shared/services/auth.service';
   styleUrl: './login.component.scss'
 })
 export default class LoginComponent {
+  _formUtilsSvc = inject(FormUtilsService)
+  private _authSvc = inject(AuthService)
+  private _snackBar = inject(MatSnackBar)
+  private router = inject(Router)
   form!: FormGroup;
-  _authSvc = inject(AuthService)
-  router = inject(Router)
+
+
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -33,11 +39,31 @@ export default class LoginComponent {
     })
   }
 
+  private onError(message: string) {
+    this._snackBar.open(message, "x", { duration: 3000 });
+  }
+
+  private onSuccess() {
+    this._snackBar.open("Usuário logado com sucesso", '', { duration: 2000 });
+    this.onCancel()
+  }
+
+  onCancel() {
+    this.router.navigate([''])
+  }
+
   submit() {
     if (this.form.valid) {
       this._authSvc.login(this.form.value).subscribe({
-        next: (response) => this.router.navigate([''])
+        next: () => this.onSuccess(),
+        error: (error) => {
+          // Utilizando optional chain para acessar propriedades aninhadas de forma segura
+          const errorMessage = error?.error?.error ?? "Email ou senha inválida";
+          this.onError(errorMessage);
+        }
       })
+    } else {
+      this._formUtilsSvc.validateAllFormFields(this.form)
     }
   }
 

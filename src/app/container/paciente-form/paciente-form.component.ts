@@ -1,29 +1,29 @@
-import { Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { SheetsService } from '../../shared/services/sheets.service';
-import { map, Observable } from 'rxjs';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import moment from 'moment';
 import { Router } from '@angular/router';
+import moment from 'moment';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+import { SheetsService } from '../../shared/services/sheets.service';
 
 
-
-export interface PeriodicElement {
+export interface TabelaAPache {
   pontos: string;
   mortalidade: string;
 
 }
-const ELEMENT_DATA: PeriodicElement[] = [
+const ELEMENT_DATA: TabelaAPache[] = [
   { pontos: "0 - 4 pontos", mortalidade: "4% não cirúrgicos, 1% pós-cirúrgico" },
   { pontos: "5 - 9 pontos", mortalidade: "8% não cirúrgico, 3% pós-cirúrgico" },
   { pontos: "10 - 14 pontos", mortalidade: "15% não cirúrgico, 7% pós cirúrgico" },
@@ -53,15 +53,19 @@ const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: './paciente-form.component.html',
   styleUrl: './paciente-form.component.scss'
 })
+
 export default class PacienteFormComponent {
+  @ViewChild('input') input!: ElementRef<HTMLInputElement>;
   _sheetSvc = inject(SheetsService)
+  private _snackBar = inject(MatSnackBar)
+
+
   router = inject(Router)
   form!: FormGroup;
-  @ViewChild('input') input!: ElementRef<HTMLInputElement>;
-  myControl = new FormControl('');
-  options: string[] = ['Cirurgia cardíaca', 'Tumor cerebral', 'HSA', 'IRA'];
   filteredOptions: string[];
+  options: string[] = ['Cirurgia cardíaca', 'Tumor cerebral', 'HSA', 'IRA'];
   isLoading = signal<boolean>(false)
+  myControl = new FormControl('');
   constructor(private fb: NonNullableFormBuilder) {
 
     this.form = this.fb.group({
@@ -109,13 +113,13 @@ export default class PacienteFormComponent {
   calculateDateDifference(start: Date, end: Date): number {
     const startMoment = moment(start);
     const endMoment = moment(end);
-    return endMoment.diff(startMoment, 'days'); // Calcula a diferença em dias
+    return endMoment.diff(startMoment, 'days');
   }
 
   onOptionSelected(event: MatAutocompleteSelectedEvent) {
     const selectedOption = event.option.viewValue;
     const patologiaControl = this.form.get('patologia');
-    if (patologiaControl) { // Verifica se patologiaControl não é null
+    if (patologiaControl) {
       patologiaControl.patchValue(selectedOption);
     }
   }
@@ -197,19 +201,12 @@ export default class PacienteFormComponent {
 
   getPatology() {
     this._sheetSvc.getPatology().subscribe((data: any) => {
-      // Mapeia os dados para extrair apenas os valores da coluna de patologia
-      const patologias = data.values.map((item: any[]) => item[0]); // Supondo que os dados estão na primeira coluna
-
-      // Atualiza o array options com os valores obtidos
+      const patologias = data.values.map((item: any[]) => item[0]);
       this.options = patologias;
-
       console.log('Patologias obtidas:', this.options);
     }, error => {
       console.error('Erro ao buscar patologias:', error);
-      // Trate o erro conforme necessário (exibir mensagem de erro, etc.)
     });
   }
-
-
 
 }
