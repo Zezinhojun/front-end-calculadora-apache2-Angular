@@ -6,7 +6,7 @@
 
   <form [formGroup]="form" (submit)="submit()">
     <mat-card-content>
-      <mat-form-field class="example-full-width">
+      <mat-form-field>
         <mat-label>Email</mat-label>
         <input type="email" matInput formControlName="email">
         @if(form.get('email')?.invalid){
@@ -14,9 +14,10 @@
         }
       </mat-form-field>
 
-      <mat-form-field class="example-full-width">
+      <mat-form-field>
         <mat-label>Senha</mat-label>
         <input type="password" matInput formControlName="password">
+
         @if(form.get('password')?.invalid){
         <mat-error> {{ _formUtilsSvc.getErrorMessage(form, 'password') }}</mat-error>
         }

@@ -64,7 +64,7 @@ export default class PacienteFormComponent {
   form!: FormGroup;
   filteredOptions: string[];
   options: string[] = ['Cirurgia cardíaca', 'Tumor cerebral', 'HSA', 'IRA'];
-  isLoading = signal<boolean>(false)
+  isLoading = this._sheetSvc.isLoading
   myControl = new FormControl('');
   constructor(private fb: NonNullableFormBuilder) {
 

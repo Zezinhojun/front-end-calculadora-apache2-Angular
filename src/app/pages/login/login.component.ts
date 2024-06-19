@@ -51,13 +51,12 @@ export default class LoginComponent {
   onCancel() {
     this.router.navigate([''])
   }
-
+  //Tratar os erros do backend
   submit() {
     if (this.form.valid) {
       this._authSvc.login(this.form.value).subscribe({
         next: () => this.onSuccess(),
         error: (error) => {
-          // Utilizando optional chain para acessar propriedades aninhadas de forma segura
           const errorMessage = error?.error?.error ?? "Email ou senha inválida";
           this.onError(errorMessage);
         }

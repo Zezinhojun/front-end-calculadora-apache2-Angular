@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiGoogleSheetsEndpoint } from '../constant';
 
@@ -8,6 +8,7 @@ import { ApiGoogleSheetsEndpoint } from '../constant';
   providedIn: 'root'
 })
 export class SheetsService {
+  isLoading = signal<boolean>(false)
   constructor(private _http: HttpClient) { }
 
   getRows(): Observable<any> {

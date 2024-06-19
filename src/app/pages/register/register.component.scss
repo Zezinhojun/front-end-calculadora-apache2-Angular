@@ -3,6 +3,7 @@ mat-card{
   justify-content: center;
   align-items: center;
   width: 100%;
+  border: none !important;
 }
 form{
   display: flex;
@@ -15,4 +16,8 @@ mat-card-content{
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.btn-register{
+  margin-top: 2rem;
 }
