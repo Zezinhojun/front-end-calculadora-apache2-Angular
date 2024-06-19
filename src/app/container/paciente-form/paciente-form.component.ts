@@ -12,7 +12,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { SheetsService } from '../../shared/services/sheets.service';
 import { map, Observable } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import moment from 'moment';
+import { Router } from '@angular/router';
 
 
 
@@ -45,20 +47,21 @@ const ELEMENT_DATA: PeriodicElement[] = [
     MatInputModule,
     MatSelectModule,
     MatRadioModule,
-    MatButtonModule],
+    MatButtonModule,
+    MatProgressSpinnerModule],
 
   templateUrl: './paciente-form.component.html',
   styleUrl: './paciente-form.component.scss'
 })
-export default class PacienteFormComponent implements OnInit {
+export default class PacienteFormComponent {
   _sheetSvc = inject(SheetsService)
+  router = inject(Router)
   form!: FormGroup;
-  houses: string[] = [];
   @ViewChild('input') input!: ElementRef<HTMLInputElement>;
   myControl = new FormControl('');
   options: string[] = ['Cirurgia cardíaca', 'Tumor cerebral', 'HSA', 'IRA'];
   filteredOptions: string[];
-  totalSoma = 0;
+  isLoading = signal<boolean>(false)
   constructor(private fb: NonNullableFormBuilder) {
 
     this.form = this.fb.group({
@@ -102,27 +105,6 @@ export default class PacienteFormComponent implements OnInit {
     });
     this.filteredOptions = this.options.slice();
   }
-  ngOnInit(): void {
-    this.form.valueChanges.pipe(
-      map(value => {
-        const fieldsToSum = [
-          'dignosticoGlim', 'falenciaOrImuno', 'temperatura', 'pressao',
-          'freqCardiaca', 'freqRespiratoria', 'pao2', 'phOrHco3',
-          'sodio', 'potassio', 'creatinina', 'hematocrito',
-          'leucocitos', 'gglasgow', 'ageApache', 'criticalHealth'
-        ];
-        let total = 0;
-        fieldsToSum.forEach(field => {
-          if (value[field] !== undefined && !isNaN(parseFloat(value[field])) && isFinite(value[field])) {
-            total += parseFloat(value[field]);
-          }
-        });
-        this.totalSoma = total;
-        return total;
-      })
-    );
-  }
-
 
   calculateDateDifference(start: Date, end: Date): number {
     const startMoment = moment(start);
@@ -139,6 +121,7 @@ export default class PacienteFormComponent implements OnInit {
   }
 
   submit() {
+    this.isLoading.set(true)
     const glimControl = this.form.get('glim')
     const internacaoControl = this.form.get('internacao')
     if (glimControl && internacaoControl) {
@@ -150,7 +133,6 @@ export default class PacienteFormComponent implements OnInit {
       });
     }
     const formData = this.form.value
-    formData.totalSoma = this.totalSoma;
 
     const requestBody = {
       values: [[
@@ -180,17 +162,19 @@ export default class PacienteFormComponent implements OnInit {
         formData.criticalHealth,
       ]]
     };
-    console.log(requestBody)
-    // this._sheetSvc.createRow(requestBody).subscribe({
-    //   next: (response) => {
-    //     console.log(response);
-    //     // Trate a resposta do servidor aqui
-    //   },
-    //   error: (error) => {
-    //     console.error(error);
-    //     // Trate erros aqui
-    //   }
-    // });
+
+    this._sheetSvc.createRow(requestBody).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+    setTimeout(() => {
+      this.isLoading.set(false)
+      this.router.navigate(['/dashboard']);
+    }, 3000); // 3000 milissegundos = 3 segundos
   }
 
   formatDate(date: any): string {
