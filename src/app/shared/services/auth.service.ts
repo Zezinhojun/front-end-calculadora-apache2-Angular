@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Inject, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { map } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 import { ApiEndpoint, LocalStorage } from '../constant';
 import { ApiResponse, LoginPayload, RegisterPayload, User } from '../model/commom.model';
@@ -22,16 +22,23 @@ export class AuthService {
   register(payload: RegisterPayload) {
     return this._http.post<ApiResponse<User>>(`${ApiEndpoint.Auth.Register}`, payload);
   }
+
+
   login(payload: LoginPayload) {
     return this._http
       .post<ApiResponse<User>>(`${ApiEndpoint.Auth.Login}`, payload)
-      .pipe(map((response) => {
-        if (response?.token) {
-          localStorage.setItem(LocalStorage.token, response.token);
-          this.isLoggedIn.update(() => true)
-        }
-        return response
-      }));
+      .pipe(
+        map((response) => {
+          if (response?.token) {
+            localStorage.setItem(LocalStorage.token, response.token);
+            this.isLoggedIn.update(() => true);
+          }
+          return response;
+        }),
+        catchError((error) => {
+          return throwError(() => error);
+        })
+      );
   }
   me() {
     return this._http.get<ApiResponse<User>>(`${ApiEndpoint.Auth.Me}`);
