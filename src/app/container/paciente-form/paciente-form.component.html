@@ -1,41 +1,59 @@
 <mat-card>
   <mat-card-content>
 
-    <form [formGroup]="form" (submit)="submit()">
+    <form [formGroup]="form" (submit)="onSubmit()">
       <mat-card class="first-card">
         <mat-card-content>
+          <!-- Atendimento -->
           <mat-form-field class="full-filled">
             <mat-label>Atendimento</mat-label>
             <mat-hint>1º</mat-hint>
-            <input matInput type="number" inputmode="numeric" formControlName="atendimento">
+            <input matInput type="number" inputmode="numeric" formControlName="atendimento"
+              (blur)="onBlur('atendimento')">
+            @if(form.get('atendimento')?.invalid){
+            <mat-error> {{ _formUtilsSvc.getErrorMessage(form, 'atendimento') }}</mat-error>
+            }
           </mat-form-field>
 
+          <!-- Idade -->
           <mat-form-field class="full-filled">
             <mat-label>Idade</mat-label>
             <mat-hint>2º</mat-hint>
             <input matInput type="number" inputmode="numeric" formControlName="age">
+            @if(form.get('age')?.invalid){
+            <mat-error> {{ _formUtilsSvc.getErrorMessage(form, 'age') }} Teste</mat-error>
+            }
           </mat-form-field>
 
+          <!-- Patologia -->
           <mat-form-field class="full-filled">
             <mat-label>Patologia</mat-label>
-            <input #input type="text" placeholder="Pick one" matInput [formControl]="myControl" [matAutocomplete]="auto"
-              (input)="filter()" (focus)="filter()" formControlName="patologia">
+            <input #input type="text" placeholder="Pick one" matInput [matAutocomplete]="auto" (input)="filter()"
+              (focus)="filter()" formControlName="patologia" (blur)="onBlur('patologia')">
+            @if(form.get('patologia')?.invalid){
+            <mat-error> {{ _formUtilsSvc.getErrorMessage(form, 'patologia') }}</mat-error>
+            }
             <mat-hint>3º</mat-hint>
-            <mat-autocomplete requireSelection #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
               @for (option of filteredOptions; track option) {
               <mat-option [value]="option">{{option}}</mat-option>
               }
             </mat-autocomplete>
           </mat-form-field>
 
+          <!-- Data de internação -->
           <mat-form-field class="full-filled">
             <mat-label>Data de internação</mat-label>
-            <input matInput [matDatepicker]="picker1" formControlName="internacao">
+            <input matInput [matDatepicker]="pickerInternacao" formControlName="internacao">
+            @if(form.get('internacao')?.invalid){
+            <mat-error> {{ _formUtilsSvc.getErrorMessage(form, 'internacao') }}</mat-error>
+            }
             <mat-hint>4º</mat-hint>
-            <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-            <mat-datepicker #picker1></mat-datepicker>
+            <mat-datepicker-toggle matIconSuffix [for]="pickerInternacao"></mat-datepicker-toggle>
+            <mat-datepicker #pickerInternacao></mat-datepicker>
           </mat-form-field>
 
+          <!-- Data da GLIM -->
           <mat-form-field class="full-filled">
             <mat-label>Data da GLIM</mat-label>
             <input matInput [matDatepicker]="picker2" formControlName="glim">
@@ -44,7 +62,7 @@
             <mat-datepicker #picker2></mat-datepicker>
           </mat-form-field>
 
-          <!-- Temperatura (Graus C) -->
+          <!-- Diagnóstico GLIM -->
           <mat-form-field class="full-filled">
             <mat-label>Diagnóstico GLIM</mat-label>
             <mat-hint>6º</mat-hint>
@@ -54,22 +72,22 @@
                 inflamação (2)</mat-option>
               <mat-option value="3">Desnutrição moderada - Relacionada à doença crônica com
                 inflamação mínima ou imperceptível (3)</mat-option>
-              <mat-option value="3">Desnutrição moderada - Relacionada à doença aguda ou
+              <mat-option value="4">Desnutrição moderada - Relacionada à doença aguda ou
                 injúria com inflamação grave (4)</mat-option>
-              <mat-option value="3">Desnutrição moderada - Relacionada a fatores
+              <mat-option value="5">Desnutrição moderada - Relacionada a fatores
                 socioeconômicos ou ambientais (5)</mat-option>
-              <mat-option value="2">Desnutrição grave - Relacionada à doença crônica com
-                inflamação (2)</mat-option>
-              <mat-option value="3">Desnutrição grave - Relacionada à doença crônica com
-                inflamação mínima ou imperceptível (3)</mat-option>
-              <mat-option value="3">Desnutrição grave - Relacionada à doença aguda ou
-                injúria com inflamação grave (4)</mat-option>
-              <mat-option value="3">Desnutrição grave - Relacionada a fatores
-                socioeconômicos ou ambientais (5)</mat-option>
-
+              <mat-option value="6">Desnutrição grave - Relacionada à doença crônica com
+                inflamação (6)</mat-option>
+              <mat-option value="7">Desnutrição grave - Relacionada à doença crônica com
+                inflamação mínima ou imperceptível (7)</mat-option>
+              <mat-option value="8">Desnutrição grave - Relacionada à doença aguda ou
+                injúria com inflamação grave (8)</mat-option>
+              <mat-option value="9">Desnutrição grave - Relacionada a fatores
+                socioeconômicos ou ambientais (9)</mat-option>
             </mat-select>
           </mat-form-field>
 
+          <!-- Desfecho -->
           <mat-form-field class="full-filled">
             <mat-label>Desfecho</mat-label>
             <mat-hint>7º</mat-hint>
@@ -79,6 +97,7 @@
             </mat-select>
           </mat-form-field>
 
+          <!-- Sexo -->
           <mat-form-field class="full-filled">
             <mat-label>Sexo</mat-label>
             <mat-hint>8º</mat-hint>
@@ -88,6 +107,7 @@
             </mat-select>
           </mat-form-field>
 
+          <!-- Tempo de internação na UTI -->
           <mat-form-field class="full-filled">
             <mat-label>Tempo de internação na UTI</mat-label>
             <mat-hint>9º</mat-hint>
@@ -99,6 +119,7 @@
             <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
           </mat-form-field>
 
+          <!-- Falencia grave de órgão/imunossupressão -->
           <mat-form-field class="full-filled">
             <mat-label>Falencia grave de órgão/imunossupressão</mat-label>
             <mat-hint>10º</mat-hint>
@@ -112,7 +133,7 @@
           <mat-form-field class="full-filled">
             <mat-label>Temperatura (Graus C)</mat-label>
             <mat-hint>11º</mat-hint>
-            <mat-select formControlName="temperatura">
+            <mat-select formControlName="temperatura" (selectionChange)="onSelectionChange($event,'temperatura')">
               <mat-option value="4">>= 41 (4 pontos)</mat-option>
               <mat-option value="3">39 a 40.9 (3 pontos)</mat-option>
               <mat-option value="1">38.5 a 38.9 (1 pontos)</mat-option>
@@ -120,6 +141,8 @@
               <mat-option value="1">34 a 35.9 (1 pontos)</mat-option>
               <mat-option value="2">32 a 33.9 (2 pontos)</mat-option>
               <mat-option value="3">30 a 31.9 (3 pontos)</mat-option>
+              <mat-option value="4">
+                <=29.9 (4 pontos)</mat-option>
             </mat-select>
           </mat-form-field>
 
@@ -127,7 +150,7 @@
           <mat-form-field class="full-filled">
             <mat-label>Pressão arterial média (mmHg)</mat-label>
             <mat-hint>12º</mat-hint>
-            <mat-select formControlName="pressao">
+            <mat-select formControlName="pressao" (selectionChange)="onSelectionChange($event,'pressao')">
               <mat-option value="4">>= 160 (4 pontos)</mat-option>
               <mat-option value="3">130 a 159 (3 pontos)</mat-option>
               <mat-option value="2">110 a 129 (2 pontos)</mat-option>
@@ -142,7 +165,7 @@
           <mat-form-field class="full-filled">
             <mat-label>Frequência cardíaca</mat-label>
             <mat-hint>13º</mat-hint>
-            <mat-select formControlName="freqCardiaca">
+            <mat-select formControlName="freqCardiaca" (selectionChange)="onSelectionChange($event,'freqCardiaca')">
               <mat-option value="4">>= 180 (4 pontos)</mat-option>
               <mat-option value="3">140 a 179 (3 pontos)</mat-option>
               <mat-option value="2">110 a 139 (2 pontos)</mat-option>
@@ -158,7 +181,8 @@
           <mat-form-field class="full-filled">
             <mat-label>Frequência respiratória</mat-label>
             <mat-hint>14º</mat-hint>
-            <mat-select formControlName="freqRespiratoria">
+            <mat-select formControlName="freqRespiratoria"
+              (selectionChange)="onSelectionChange($event, 'freqRespiratoria')">
               <mat-option value="4">>= 50 (4 pontos)</mat-option>
               <mat-option value="3">35 a 49 (3 pontos)</mat-option>
               <mat-option value="1">25 a 34 (1 pontos)</mat-option>
@@ -174,7 +198,7 @@
           <mat-form-field class="full-filled">
             <mat-label>A-aPO2 (FiO2>50%) ou PaO2 (FiO2 < 50%)</mat-label>
                 <mat-hint>15º</mat-hint>
-                <mat-select formControlName="pao2">>
+                <mat-select formControlName="pao2" (selectionChange)="onSelectionChange($event, 'pao2')"> >
                   <mat-option value="4">>= 500 (4 pontos)</mat-option>
                   <mat-option value="3">350 a 499 (3 pontos)</mat-option>
                   <mat-option value="2">200 a 349 (2 pontos)</mat-option>
@@ -191,7 +215,7 @@
           <mat-form-field class="full-filled">
             <mat-label>pH ou HCO3</mat-label>
             <mat-hint>16º</mat-hint>
-            <mat-select formControlName="phOrHco3">>
+            <mat-select formControlName="phOrHco3" (selectionChange)="onSelectionChange($event,'phOrHco3')">>
               <mat-option value="4"> arterial >= 7.7; >= 52 (4 pontos)</mat-option>
               <mat-option value="3">7.6 a 7.69 ; 41 a 51.9 (3 pontos)</mat-option>
               <mat-option value="1">7.5 a 7.59 ; 32 a 40.9 (1 pontos)</mat-option>
@@ -207,14 +231,14 @@
           <mat-form-field class="full-filled">
             <mat-label>Na+ sérico (mEq/l)</mat-label>
             <mat-hint>17º</mat-hint>
-            <mat-select formControlName="sodio">>
+            <mat-select formControlName="sodio" (selectionChange)="onSelectionChange($event, 'sodio')">>
               <mat-option value="4"> >= 180 (4 pontos)</mat-option>
               <mat-option value="3">160 a 179 (3 pontos)</mat-option>
               <mat-option value="2">155 a 159 (2 pontos)</mat-option>
               <mat-option value="1">150 a 154 (1 pontos)</mat-option>
               <mat-option value="0">130 a 149 (0 pontos)</mat-option>
               <mat-option value="2">120 a 129 (2 pontos)</mat-option>
-              <mat-option value="0">111 a 119 (0 pontos)</mat-option>
+              <mat-option value="3">111 a 119 (3 pontos)</mat-option>
               <mat-option value="4">
                 <= 110 (4 pontos)</mat-option>
             </mat-select>
@@ -224,7 +248,7 @@
           <mat-form-field class="full-filled">
             <mat-label>K+ sérico (mEq/l)</mat-label>
             <mat-hint>17º</mat-hint>
-            <mat-select formControlName="potassio">>
+            <mat-select formControlName="potassio" (selectionChange)="onSelectionChange($event, 'potassio')">>
               <mat-option value="4"> >= 7 (4 pontos)</mat-option>
               <mat-option value="3">6 a 6.9 (3 pontos)</mat-option>
               <mat-option value="1">5.5 a 5.9 (1 pontos)</mat-option>
@@ -240,7 +264,7 @@
           <mat-form-field class="full-filled">
             <mat-label>Creatinina sérica (ARF significa insuficiência renal aguda)</mat-label>
             <mat-hint>18º</mat-hint>
-            <mat-select formControlName="creatinina">>
+            <mat-select formControlName="creatinina" (selectionChange)="onSelectionChange($event, 'creatinina')">>
               <mat-option value="4"> >= 3.5 (4 pontos)</mat-option>
               <mat-option value="8"> >= 3.5 na ARF (8 pontos)</mat-option>
               <mat-option value="3">2 a 3.4 (3 pontos)</mat-option>
@@ -257,7 +281,7 @@
           <mat-form-field class="full-filled">
             <mat-label>Hematócrito</mat-label>
             <mat-hint>18º</mat-hint>
-            <mat-select formControlName="hematocrito">>
+            <mat-select formControlName="hematocrito" (selectionChange)="onSelectionChange($event,'hematocrito')">>
               <mat-option value="4"> >= 60 (4 pontos)</mat-option>
               <mat-option value="2"> 50 a 59.9 (2 pontos)</mat-option>
               <mat-option value="1">46 a 49.9 (1 pontos)</mat-option>
@@ -272,7 +296,7 @@
           <mat-form-field class="full-filled">
             <mat-label>Contagem de WBC - leucócitos - (10^9/l)</mat-label>
             <mat-hint>19º</mat-hint>
-            <mat-select formControlName="leucocitos">>
+            <mat-select formControlName="leucocitos" (selectionChange)="onSelectionChange($event, 'leucocitos')">>
               <mat-option value="4"> >= 40 (4 pontos)</mat-option>
               <mat-option value="2"> 20 a 39.9 (2 pontos)</mat-option>
               <mat-option value="1">15 a 19.9 (1 pontos)</mat-option>
@@ -287,7 +311,7 @@
           <mat-form-field class="full-filled">
             <mat-label>Escala Glasgow</mat-label>
             <mat-hint>20º</mat-hint>
-            <mat-select formControlName="glasgow">>
+            <mat-select formControlName="glasgow" (selectionChange)="onSelectionChange($event, 'glasgow')">>
               <mat-option value="0"> 15 (0 pontos)</mat-option>
               <mat-option value="1"> 14 (1 pontos)</mat-option>
               <mat-option value="2"> 13 (2 pontos)</mat-option>
@@ -309,7 +333,7 @@
           <mat-form-field class="full-filled">
             <mat-label>Idade (anos)</mat-label>
             <mat-hint>21º</mat-hint>
-            <mat-select formControlName="ageApache">
+            <mat-select formControlName="ageApache" (selectionChange)="onSelectionChange($event, 'ageApache')">
               <mat-option value="6"> >= 75 (6 pontos)</mat-option>
               <mat-option value="5"> 65 a 75 (5 pontos)</mat-option>
               <mat-option value="3"> 55 a 64 (3 pontos)</mat-option>
@@ -318,24 +342,29 @@
                 <= 44 (0 pontos)</mat-option>
             </mat-select>
           </mat-form-field>
+
+          <!-- Problemas de saúde crônicos -->
           <span id="criticalHealth">Problemas de saúde crônicos: 1) Cirrose do fígado confirmada por biópsia 2) Classe
             IV da
             New York Heart Association 3) DPOC severa -- hipercapnia, uso de O2 domiciliar, ou hipertensão pulmonar 4)
             Em
             diálise regular ou 5) Imunodeprimido</span>
           <mat-hint>22º</mat-hint>
-          <mat-radio-group id="criticalHealth" formControlName="criticalHealth"
+          <mat-radio-group color="primary" (change)="onSelectionChange($event, 'criticalHealth')" id="criticalHealth"
+            formControlName="criticalHealth"
             aria-label="Problemas de saúde crônicos: 1) Cirrose do fígado confirmada por biópsia 2) Classe IV da New York Heart Association 3) DPOC severa -- hipercapnia, uso de O2 domiciliar, ou hipertensão pulmonar 4) Em diálise regular ou 5) Imunodeprimido">
             <mat-radio-button value="0">nenhum (0 pontos)</mat-radio-button>
             <mat-radio-button value="5">não cirúrgico (5 pontos)</mat-radio-button>
-            <mat-radio-button value="5">cirurgia de emergência (5 pontos)</mat-radio-button>
-            <mat-radio-button value="2">cirurgia eletiva (2 pontos)</mat-radio-button>
+            <mat-radio-button value="5">cirurgia de emergência (5
+              pontos)</mat-radio-button>
+            <mat-radio-button value="2">cirurgia eletiva (2
+              pontos)</mat-radio-button>
           </mat-radio-group>
 
         </mat-card-content>
         <mat-card>
           <mat-card-content>
-            <h2>Contagem de pontos, critérios totais: </h2>
+            <h2>Contagem de pontos, critérios totais: {{totalApache.value}} </h2>
           </mat-card-content>
         </mat-card>
         <div class="result-tab">

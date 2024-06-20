@@ -1,9 +1,9 @@
-mat-toolbar{
+mat-dialog-actions{
   display: flex;
-  justify-content: space-around;
-  width: 100%;
+  align-items: center;
+  justify-content: center;
 }
-.container{
+.btn-group{
   display: flex;
   justify-content: center;
   align-items: center;

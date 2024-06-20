@@ -51,6 +51,7 @@ export default class LoginComponent {
   onCancel() {
     this.router.navigate([''])
   }
+
   //Tratar os erros do backend
   submit() {
     if (this.form.valid) {

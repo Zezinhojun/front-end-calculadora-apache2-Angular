@@ -1,3 +1,4 @@
+import { DialogComponent } from './../../shared/dialog/dialog.component';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,6 +12,8 @@ import { map } from 'rxjs';
 import { User } from '../../shared/model/commom.model';
 import { AuthService } from '../../shared/services/auth.service';
 import { SheetsService } from '../../shared/services/sheets.service';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface Paciente {
   atendimento: number;
@@ -27,9 +30,11 @@ export interface Paciente {
 })
 export default class DashboardComponent implements OnInit {
   dataSource = new MatTableDataSource<Paciente>()
+  private dialog = inject(MatDialog)
   displayedColumns: string[] = ['atendimento', 'idade', 'patologia', 'internacao', 'actions'];
   private readonly router = inject(Router)
   private readonly _sheets = inject(SheetsService)
+  private _snackBar = inject(MatSnackBar)
   _authSvc = inject(AuthService)
   user!: User
 
@@ -56,23 +61,43 @@ export default class DashboardComponent implements OnInit {
     });
   }
 
+  onDelete(index: number): void {
+    const dialogRef = this.dialog.open(DialogComponent);
 
-  onDelete(index: any): void {
-    console.log(index + 2)
-    const lineId = index + 2
-    this._sheets.deleteRow(lineId).subscribe(response => {
-      console.log("Linha deletada com sucesso: ", response);
-      this.getTable(); // Atualiza a tabela após excluir a linha
-    },
-      error => {
-        console.error('Erro ao deletar linha:', error);
-        // Trate o erro conforme necessário (exibir mensagem de erro, etc.)
+    dialogRef.afterClosed().subscribe({
+      next: (result) => {
+        if (result) {
+          const lineId = index + 2;
+          this._sheets.deleteRow(lineId).subscribe({
+            next: () => {
+              this.onSuccess();
+              this.getTable();
+            },
+            error: (error) => {
+              const errorMessage = error?.error?.error ?? "Erro ao deletar paciente";
+              this.onError(errorMessage);
+            }
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao fechar o diálogo:', error);
       }
-    )
-
+    });
   }
 
+  private onError(message: string) {
+    this._snackBar.open(message, "x", { duration: 3000 });
+  }
 
+  private onSuccess() {
+    this._snackBar.open("Paciente deletado com sucesso", '', { duration: 2000 });
+    this.onCancel()
+  }
+
+  onCancel() {
+    this.router.navigate([''])
+  }
 
   logout() {
     this._authSvc.logout()
