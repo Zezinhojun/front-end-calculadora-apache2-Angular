@@ -1,7 +1,6 @@
 <mat-card>
   <mat-card-content>
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
       <ng-container matColumnDef="atendimento">
         <th mat-header-cell *matHeaderCellDef> Atendimento. </th>
         <td mat-cell *matCellDef="let element"> {{element.atendimento}} </td>
@@ -30,10 +29,10 @@
           </button>
         </th>
         <td mat-cell *matCellDef="let element let i = index;" class="action-group">
-          <button mat-mini-fab color="primary" aria-label="Editar paciente">
+          <button mat-icon-button color="primary" aria-label="Editar paciente">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-mini-fab color="warn" aria-label="Remover paciente" (click)="onDelete(i)">
+          <button mat-icon-button color="warn" aria-label="Remover paciente" (click)="onDelete(i)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>

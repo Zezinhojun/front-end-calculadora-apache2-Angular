@@ -1,0 +1,6 @@
+<h1 mat-dialog-title>Confirmar Deleção</h1>
+<div mat-dialog-content>Você tem certeza que deseja deletar este paciente?</div>
+<div mat-dialog-actions class="btn-group">
+  <button mat-flat-button (click)="onConfirm(false)">Cancelar</button>
+  <button mat-flat-button color="warn" (click)="onConfirm(true)">Deletar</button>
+</div>

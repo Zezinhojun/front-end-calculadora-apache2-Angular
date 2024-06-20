@@ -1,20 +1,22 @@
-import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import moment from 'moment';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { BehaviorSubject } from 'rxjs';
 
+import { FormUtilsService } from '../../shared/services/form/form-utils.service';
 import { SheetsService } from '../../shared/services/sheets.service';
 
 
@@ -23,6 +25,10 @@ export interface TabelaAPache {
   mortalidade: string;
 
 }
+interface LastValues {
+  [key: string]: number;
+}
+
 const ELEMENT_DATA: TabelaAPache[] = [
   { pontos: "0 - 4 pontos", mortalidade: "4% não cirúrgicos, 1% pós-cirúrgico" },
   { pontos: "5 - 9 pontos", mortalidade: "8% não cirúrgico, 3% pós-cirúrgico" },
@@ -37,7 +43,7 @@ const ELEMENT_DATA: TabelaAPache[] = [
 @Component({
   selector: 'app-paciente-form',
   standalone: true,
-  providers: [provideNativeDateAdapter()],
+  providers: [provideNativeDateAdapter(), { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },],
   imports: [MatTableModule,
     ReactiveFormsModule,
     MatDatepickerModule,
@@ -55,50 +61,42 @@ const ELEMENT_DATA: TabelaAPache[] = [
 })
 
 export default class PacienteFormComponent {
-  @ViewChild('input') input!: ElementRef<HTMLInputElement>;
-  _sheetSvc = inject(SheetsService)
-  private _snackBar = inject(MatSnackBar)
 
-
-  router = inject(Router)
-  form!: FormGroup;
-  filteredOptions: string[];
-  options: string[] = ['Cirurgia cardíaca', 'Tumor cerebral', 'HSA', 'IRA'];
-  isLoading = this._sheetSvc.isLoading
-  myControl = new FormControl('');
-  constructor(private fb: NonNullableFormBuilder) {
-
+  constructor(private fb: FormBuilder) {
+    this.getPatology();
+    this.loadAtendimentos();
     this.form = this.fb.group({
       atendimento: new FormControl('', [Validators.required]),
-      age: new FormControl('', [Validators.required]),
-      patologia: new FormControl('', [Validators.required]),
-      internacao: new FormControl('', [Validators.required]),
-      glim: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-      dignosticoGlim: new FormControl('', [Validators.required]),
-      desfecho: new FormControl('', [Validators.required]),
-      sexo: new FormControl('', [Validators.required]),
-      tempoDeInternacao: new FormControl('', [Validators.required]),
-      falenciaOrImuno: new FormControl('', [Validators.required]),
-      temperatura: new FormControl('', [Validators.required]),
-      pressao: new FormControl('', [Validators.required]),
-      freqCardiaca: new FormControl('', [Validators.required]),
-      freqRespiratoria: new FormControl('', [Validators.required]),
-      pao2: new FormControl('', [Validators.required]),
-      phOrHco3: new FormControl('', [Validators.required]),
-      sodio: new FormControl('', [Validators.required]),
-      potassio: new FormControl('', [Validators.required]),
-      creatinina: new FormControl('', [Validators.required]),
-      hematocrito: new FormControl('', [Validators.required]),
-      leucocitos: new FormControl('', [Validators.required]),
-      glasgow: new FormControl('', [Validators.required]),
-      ageApache: new FormControl('', [Validators.required]),
-      criticalHealth: new FormControl('', [Validators.required]),
+      age: ['', [Validators.required]],
+      patologia: [''],
+      internacao: ['', [Validators.required]],
+      glim: ['', [Validators.required]],
+      dignosticoGlim: [''],
+      desfecho: [''],
+      sexo: [''],
+      tempoDeInternacao: [''],
+      falenciaOrImuno: [''],
+      temperatura: [''],
+      pressao: [''],
+      freqCardiaca: [''],
+      freqRespiratoria: [''],
+      pao2: [''],
+      phOrHco3: [''],
+      sodio: [''],
+      potassio: [''],
+      creatinina: [''],
+      hematocrito: [''],
+      leucocitos: [''],
+      glasgow: [''],
+      ageApache: [''],
+      criticalHealth: [''],
+      totalApache: [this.totalApache.value],
       campaignOne: this.fb.group({
         start: [null],
         end: [null]
       })
     })
-
+    this.filteredOptions = this.patologies.slice();
     this.form.get('campaignOne')!.valueChanges.subscribe(value => {
       const start = value.start;
       const end = value.end;
@@ -107,16 +105,97 @@ export default class PacienteFormComponent {
         this.form.get('tempoDeInternacao')!.setValue(diff);
       }
     });
-    this.filteredOptions = this.options.slice();
   }
 
-  calculateDateDifference(start: Date, end: Date): number {
-    const startMoment = moment(start);
-    const endMoment = moment(end);
-    return endMoment.diff(startMoment, 'days');
+  @ViewChild('input') input!: ElementRef<HTMLInputElement>;
+  private readonly _sheetSvc = inject(SheetsService)
+  private readonly _snackBar = inject(MatSnackBar)
+  private readonly router = inject(Router)
+  private lastValues: LastValues = {};
+  private uniqueFieldValues: Record<string, number> = {};
+  private serviceExists: boolean = false;
+  private atendimentoList: number[] = [];
+
+  public _formUtilsSvc = inject(FormUtilsService)
+  public displayedColumns: string[] = ['pontos', 'mortalidade'];
+  public dataSource = ELEMENT_DATA;
+  public filteredOptions: string[];
+  public patologies: string[] = [];
+  public isLoading = this._sheetSvc.isLoading
+  public form!: FormGroup;
+  public totalApache = new BehaviorSubject(0)
+
+  public onSubmit() {
+    if (this.form.valid) {
+      this.isLoading.set(true)
+      const glimControl = this.form.get('glim')
+      const internacaoControl = this.form.get('internacao')
+      if (glimControl && internacaoControl) {
+        const formattedDateGlim = this.formatDate(glimControl.value);
+        const formattedDateInternacao = this.formatDate(internacaoControl.value);
+        this.form.patchValue({
+          glim: formattedDateGlim,
+          internacao: formattedDateInternacao
+        });
+      }
+      const formData = this.form.value
+      const requestBody = {
+        values: [[
+          formData.atendimento,
+          formData.age,
+          formData.patologia,
+          formData.internacao,
+          formData.glim,
+          formData.dignosticoGlim,
+          formData.desfecho,
+          formData.sexo,
+          formData.tempoDeInternacao,
+          formData.falenciaOrImuno,
+          formData.temperatura,
+          formData.pressao,
+          formData.freqCardiaca,
+          formData.freqRespiratoria,
+          formData.pao2,
+          formData.phOrHco3,
+          formData.sodio,
+          formData.potassio,
+          formData.creatinina,
+          formData.hematocrito,
+          formData.leucocitos,
+          formData.glasgow,
+          formData.ageApache,
+          formData.criticalHealth,
+          formData.totalApache
+        ]]
+      };
+
+      this._sheetSvc.createRow(requestBody).subscribe({
+        next: () => this.onSuccess(),
+        error: (error) => {
+          const errorMessage = error?.error?.error ?? "Erro ao criar usuário";
+          this.onError(errorMessage);
+        }
+      });
+      setTimeout(() => {
+        this.isLoading.set(false)
+        this.router.navigate(['']);
+      }, 3000);
+    } else {
+      this._formUtilsSvc.validateAllFormFields(this.form)
+    }
   }
 
-  onOptionSelected(event: MatAutocompleteSelectedEvent) {
+  public onSelectionChange(event: any, controlName: string) {
+    const value = parseInt(event?.value);
+    if (!isNaN(value)) {
+      this.uniqueFieldValues[controlName] = value;
+      this.totalApache.next((Object.values(this.uniqueFieldValues).reduce((acc, val) => acc + val, 0)))
+      this.updateTotalApacheInForm();
+
+    }
+  }
+
+  public onOptionSelected(event: MatAutocompleteSelectedEvent) {
     const selectedOption = event.option.viewValue;
     const patologiaControl = this.form.get('patologia');
     if (patologiaControl) {
@@ -124,89 +203,94 @@ export default class PacienteFormComponent {
     }
   }
 
-  submit() {
-    this.isLoading.set(true)
-    const glimControl = this.form.get('glim')
-    const internacaoControl = this.form.get('internacao')
-    if (glimControl && internacaoControl) {
-      const formattedDateGlim = this.formatDate(glimControl.value);
-      const formattedDateInternacao = this.formatDate(internacaoControl.value);
-      this.form.patchValue({
-        glim: formattedDateGlim,
-        internacao: formattedDateInternacao
-      });
-    }
-    const formData = this.form.value
-
-    const requestBody = {
-      values: [[
-        formData.atendimento,
-        formData.age,
-        formData.patologia,
-        formData.internacao,
-        formData.glim,
-        formData.dignosticoGlim,
-        formData.desfecho,
-        formData.sexo,
-        formData.tempoDeInternacao,
-        formData.falenciaOrImuno,
-        formData.temperatura,
-        formData.pressao,
-        formData.freqCardiaca,
-        formData.freqRespiratoria,
-        formData.pao2,
-        formData.phOrHco3,
-        formData.sodio,
-        formData.potassio,
-        formData.creatinina,
-        formData.hematocrito,
-        formData.leucocitos,
-        formData.glasgow,
-        formData.ageApache,
-        formData.criticalHealth,
-      ]]
-    };
-
-    this._sheetSvc.createRow(requestBody).subscribe({
-      next: (response) => {
-        console.log(response);
-      },
-      error: (error) => {
-        console.error(error);
+  public onBlur(fieldName: string): void {
+    const fieldValue = this.form.get(fieldName)?.value;
+    if (fieldName === 'atendimento') {
+      if (this.atendimentoList.includes(Number(fieldValue))) {
+        this.form.get('atendimento')?.setErrors({ 'duplicate': true });
+        this.onError("Atendimento já cadastrado");
+        this.form.get('atendimento')?.reset();
       }
-    });
-    setTimeout(() => {
-      this.isLoading.set(false)
-      this.router.navigate(['/dashboard']);
-    }, 3000); // 3000 milissegundos = 3 segundos
+    }
   }
 
-  formatDate(date: any): string {
-    return moment(date).format('DD/MM/YYYY');
-  }
-
-  filter(): void {
+  public filter(): void {
     const filterValue = this.input.nativeElement.value.toLowerCase();
-    this.filteredOptions = this.options.filter(o => o.toLowerCase().includes(filterValue));
+    this.filteredOptions = this.patologies.filter(o => o.toLowerCase().includes(filterValue));
   }
 
-  displayedColumns: string[] = ['pontos', 'mortalidade'];
-  dataSource = ELEMENT_DATA;
 
-  readonly campaignOne = new FormGroup({
+  private calculateDateDifference(start: Date, end: Date): number {
+    const startMoment = moment(start);
+    const endMoment = moment(end);
+    return endMoment.diff(startMoment, 'days');
+  }
+
+  private readonly campaignOne = new FormGroup({
     start: new FormControl(),
     end: new FormControl(),
   });
 
+  private updateTotalApacheInForm() {
+    this.form.get('totalApache')?.setValue(this.totalApache.value);
+  }
 
-  getPatology() {
-    this._sheetSvc.getPatology().subscribe((data: any) => {
-      const patologias = data.values.map((item: any[]) => item[0]);
-      this.options = patologias;
-      console.log('Patologias obtidas:', this.options);
-    }, error => {
-      console.error('Erro ao buscar patologias:', error);
+  private getPatology() {
+    this._sheetSvc.getPatology().subscribe({
+      next: (data: any) => {
+        const patologias = data.values.map((item: any[]) => item[0]);
+        this.patologies = Array.from(new Set(patologias));
+        this.filteredOptions = [...this.patologies];
+      }
     });
   }
+
+  private checkService(): void {
+    const serviceName = this.form.get('serviceName')?.value;
+    this._sheetSvc.getService().subscribe({
+      next: (data) => {
+        const existingServices = data.values.map((item: any[]) => item[0]);
+        this.serviceExists = existingServices.includes(serviceName);
+        if (this.serviceExists) {
+          console.warn('Serviço já existe na lista:', serviceName);
+        } else {
+          console.log('Serviço não existe, pode prosseguir:', serviceName);
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao buscar serviços:', err);
+      }
+    });
+  }
+
+  private getFieldValue(fieldName: string) {
+    return this.form.get(fieldName)?.value;
+  }
+
+  private loadAtendimentos(): void {
+    this._sheetSvc.getService().subscribe({
+      next: (data) => {
+        this.atendimentoList = data.values.map((item: any[]) => Number(item[0]));
+      },
+    });
+  }
+
+  private onError(message: string) {
+    this._snackBar.open(message, "x", { duration: 3000 });
+  }
+
+  private onSuccess() {
+    this._snackBar.open("Paciente criado com sucesso", '', { duration: 2000 });
+    this.onCancel()
+  }
+
+  private onCancel() {
+    this.router.navigate([''])
+  }
+
+  private formatDate(date: any): string {
+    return moment(date).format('DD/MM/YYYY');
+  }
+
 
 }
