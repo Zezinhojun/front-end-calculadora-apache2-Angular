@@ -58,13 +58,11 @@ export default class LoginComponent {
       this._authSvc.login(this.form.value).subscribe({
         next: () => this.onSuccess(),
         error: (error) => {
-          const errorMessage = error?.error?.error ?? "Email ou senha inválida";
-          this.onError(errorMessage);
+          this.onError(error);
         }
       })
     } else {
       this._formUtilsSvc.validateAllFormFields(this.form)
     }
   }
-
 }

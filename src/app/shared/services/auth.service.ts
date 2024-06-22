@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Inject, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, map, throwError } from 'rxjs';
@@ -46,11 +46,13 @@ export class AuthService {
           }
           return response;
         }),
-        catchError((error) => {
+        catchError((error: HttpErrorResponse) => {
           return throwError(() => error);
         })
       );
   }
+
+
   me() {
     return this._http.get<ApiResponse<User>>(`${ApiEndpoint.Auth.Me}`);
   }
