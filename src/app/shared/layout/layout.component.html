@@ -11,5 +11,13 @@
   </div>
 </mat-toolbar>
 <main class="container">
+
   <router-outlet></router-outlet>
+
 </main>
+@if (isLoading()) {
+<div class="spinner">
+  <app-spinner />
+</div>
+
+}

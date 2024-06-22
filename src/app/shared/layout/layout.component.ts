@@ -5,6 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { SpinnerComponent } from '../../components/spinner/spinner.component';
+import { SpinnerService } from '../services/spinner/spinner.service';
 
 @Component({
   selector: 'app-layout',
@@ -15,13 +17,16 @@ import { AuthService } from '../services/auth.service';
     MatIconModule,
     MatButtonModule,
     MatToolbarModule,
-    RouterLink
+    RouterLink,
+    SpinnerComponent
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent implements OnInit {
   _authSvc = inject(AuthService)
+  _spinnerSvc = inject(SpinnerService)
+  isLoading = this._spinnerSvc.isLoading
   isLoggedin = false
   injector = inject(Injector)
   ngOnInit(): void {

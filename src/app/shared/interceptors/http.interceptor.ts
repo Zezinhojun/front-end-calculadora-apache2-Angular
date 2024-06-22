@@ -1,9 +1,11 @@
 import { HttpErrorResponse, type HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthService } from './services/auth.service';
+
 import { catchError, retry, throwError } from 'rxjs';
-import { LocalStorage } from './constant';
+
 import { Router } from '@angular/router';
+import { LocalStorage } from '../constant';
+import { AuthService } from '../services/auth.service';
 
 export const httpInterceptor: HttpInterceptorFn = (req, next) => {
 

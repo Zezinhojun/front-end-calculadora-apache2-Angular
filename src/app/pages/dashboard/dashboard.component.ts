@@ -15,6 +15,7 @@ import { SheetsService } from '../../shared/services/sheets.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { SpinnerService } from '../../shared/services/spinner/spinner.service';
 
 export interface Paciente {
   atendimento: number;
@@ -39,6 +40,7 @@ export default class DashboardComponent implements OnInit {
   private _snackBar = inject(MatSnackBar)
   _authSvc = inject(AuthService)
   user!: User
+  _spinnerSvc = inject(SpinnerService)
   // pacientes = this._sheets.pacientes
 
   pageIndex = 0;
@@ -59,6 +61,7 @@ export default class DashboardComponent implements OnInit {
 
 
   private getTable() {
+    this._spinnerSvc.show()
     this._sheets.getRows(this.pageIndex, this.pageSize).pipe(
       map((data: any): Paciente[] => {
         const paciente = data.values.map((item: any[]): Paciente => {
@@ -76,9 +79,9 @@ export default class DashboardComponent implements OnInit {
         const startIndex = this.pageIndex * this.pageSize;
         const endIndex = startIndex + this.pageSize;
         const filteredData = paciente.slice(startIndex, endIndex);
-
         this.dataSource.data = filteredData;
         this.totalElements.set(this.totalElements());
+        this._spinnerSvc.hide()
       });
   }
 
