@@ -45,3 +45,7 @@
 
   </mat-card-content>
 </mat-card>
+
+<mat-paginator [length]="totalElements()" [pageIndex]="pageIndex" [pageSize]="pageSize" (page)="handlePageEvent($event)"
+  [pageSizeOptions]="[5, 10, 15]" aria-label="Select page">
+</mat-paginator>

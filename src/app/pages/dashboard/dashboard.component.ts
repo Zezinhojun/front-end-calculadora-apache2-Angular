@@ -14,6 +14,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { SheetsService } from '../../shared/services/sheets.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 export interface Paciente {
   atendimento: number;
@@ -24,11 +25,12 @@ export interface Paciente {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatButtonModule, MatCardModule, MatIconModule, MatTableModule, MatToolbarModule],
+  imports: [MatButtonModule, MatCardModule, MatIconModule, MatTableModule, MatToolbarModule, MatPaginatorModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export default class DashboardComponent implements OnInit {
+
   dataSource = new MatTableDataSource<Paciente>()
   private dialog = inject(MatDialog)
   displayedColumns: string[] = ['atendimento', 'idade', 'patologia', 'internacao', 'actions'];
@@ -37,13 +39,27 @@ export default class DashboardComponent implements OnInit {
   private _snackBar = inject(MatSnackBar)
   _authSvc = inject(AuthService)
   user!: User
+  // pacientes = this._sheets.pacientes
+
+  pageIndex = 0;
+  pageSize = 10;
+  pageEvent!: PageEvent;
+  public totalElements = this._sheets.totalElements;
+  public totalPages = this._sheets.totalPages
 
   ngOnInit(): void {
     this.getTable()
   }
 
+  handlePageEvent(e: PageEvent) {
+    this.pageIndex = e.pageIndex;
+    this.pageSize = e.pageSize;
+    this.getTable();
+  }
+
+
   private getTable() {
-    this._sheets.getRows().pipe(
+    this._sheets.getRows(this.pageIndex, this.pageSize).pipe(
       map((data: any): Paciente[] => {
         const paciente = data.values.map((item: any[]): Paciente => {
           const dataInternacao = moment(item[3], 'DD/MM/YYYY HH:mm:ss').format('DD/MM/YYYY');
@@ -55,11 +71,17 @@ export default class DashboardComponent implements OnInit {
           };
         });
         return paciente;
-      })
-    ).subscribe(paciente => {
-      this.dataSource.data = paciente;
-    });
+      }))
+      .subscribe(paciente => {
+        const startIndex = this.pageIndex * this.pageSize;
+        const endIndex = startIndex + this.pageSize;
+        const filteredData = paciente.slice(startIndex, endIndex);
+
+        this.dataSource.data = filteredData;
+        this.totalElements.set(this.totalElements());
+      });
   }
+
 
   onDelete(index: number): void {
     const dialogRef = this.dialog.open(DialogComponent);
@@ -67,7 +89,7 @@ export default class DashboardComponent implements OnInit {
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         if (result) {
-          const lineId = index + 2;
+          const lineId = index + 2 + (this.pageIndex * this.pageSize);
           this._sheets.deleteRow(lineId).subscribe({
             next: () => {
               this.onSuccess();
