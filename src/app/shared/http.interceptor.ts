@@ -18,7 +18,8 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   return next(req).pipe(
-    retry(2), catchError((e: HttpErrorResponse) => {
+    retry(2),
+    catchError((e: HttpErrorResponse) => {
       if (e.status === 401) {
         localStorage.removeItem(LocalStorage.token);
         router.navigate([''])
