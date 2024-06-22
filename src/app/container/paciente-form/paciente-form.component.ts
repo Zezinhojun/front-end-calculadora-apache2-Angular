@@ -125,6 +125,20 @@ export default class PacienteFormComponent {
   public form!: FormGroup;
   public totalApache = new BehaviorSubject(0)
 
+
+  public findLineForValue(value: number): number | null {
+    for (const item of ELEMENT_DATA) {
+      const currentRange = item.pontos.split(' - ')
+      const minPoints = parseInt(currentRange[0].replace("0 - ", ''));
+      const maxPoints = parseInt(currentRange[1].replace(" pontos", ""));
+
+      if (value >= minPoints && value <= maxPoints) {
+        return ELEMENT_DATA.indexOf(item);
+      }
+    }
+    return null
+  }
+
   public onSubmit() {
     if (this.form.valid) {
       this.isLoading.set(true)

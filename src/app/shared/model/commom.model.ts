@@ -21,3 +21,10 @@ export interface ApiResponse<T> {
   error?: string;
   data: T;
 }
+
+export interface IPaciente {
+  atendimento: number;
+  idade: number;
+  internacao: string
+  patologia: string
+}
