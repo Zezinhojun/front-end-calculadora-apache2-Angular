@@ -1,8 +1,10 @@
-import { DialogComponent } from './../../shared/dialog/dialog.component';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
@@ -12,10 +14,8 @@ import { map } from 'rxjs';
 import { User } from '../../shared/model/commom.model';
 import { AuthService } from '../../shared/services/auth.service';
 import { SheetsService } from '../../shared/services/sheets.service';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { SpinnerService } from '../../shared/services/spinner/spinner.service';
+import { DialogComponent } from './../../shared/dialog/dialog.component';
 
 export interface Paciente {
   atendimento: number;
@@ -34,14 +34,13 @@ export default class DashboardComponent implements OnInit {
 
   dataSource = new MatTableDataSource<Paciente>()
   private dialog = inject(MatDialog)
-  displayedColumns: string[] = ['atendimento', 'idade', 'patologia', 'internacao', 'actions'];
+  displayedColumns: string[] = ['atendimento', 'idade', 'patologia', 'actions'];
   private readonly router = inject(Router)
   private readonly _sheets = inject(SheetsService)
   private _snackBar = inject(MatSnackBar)
   _authSvc = inject(AuthService)
   user!: User
   _spinnerSvc = inject(SpinnerService)
-  // pacientes = this._sheets.pacientes
 
   pageIndex = 0;
   pageSize = 10;

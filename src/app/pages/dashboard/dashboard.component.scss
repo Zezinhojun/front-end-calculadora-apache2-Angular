@@ -1,7 +1,18 @@
+
+mat-table{
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  margin: 4rem auto 2rem auto;
+  border-radius: 8px;
+}
+table {
+  width: 100%;
+}
 .action-column{
   display: flex;
   justify-content: center;
-  padding: 1rem;
+}
+mat-header-cell{
+  padding:1rem  ;
 }
 .action-group{
   display: flex;
@@ -13,3 +24,5 @@ mat-toolbar{
 display: flex;
 justify-content: center;
 }
+
+
