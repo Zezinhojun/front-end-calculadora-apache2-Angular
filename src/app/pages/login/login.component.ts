@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, model } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,11 +16,13 @@ import { FormUtilsService } from '../../shared/services/form/form-utils.service'
   selector: 'app-login',
   standalone: true,
   imports: [
+    MatCheckboxModule,
+    FormsModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
     ReactiveFormsModule,
-    MatInputModule
+    MatInputModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -29,13 +32,15 @@ export default class LoginComponent {
   private _authSvc = inject(AuthService)
   private _snackBar = inject(MatSnackBar)
   private router = inject(Router)
-  form!: FormGroup;
+  public form!: FormGroup;
+
 
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
+      remember: [false]
     })
   }
 
@@ -52,7 +57,6 @@ export default class LoginComponent {
     this.router.navigate([''])
   }
 
-  //Tratar os erros do backend
   submit() {
     if (this.form.valid) {
       this._authSvc.login(this.form.value).subscribe({

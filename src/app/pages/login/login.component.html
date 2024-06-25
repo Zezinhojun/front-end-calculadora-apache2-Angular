@@ -1,9 +1,7 @@
 <mat-card appearance="outlined">
-
   <mat-card-header>
     <mat-card-title>Login</mat-card-title>
   </mat-card-header>
-
   <form [formGroup]="form" (submit)="submit()">
     <mat-card-content>
       <mat-form-field>
@@ -13,7 +11,6 @@
         <mat-error> {{ _formUtilsSvc.getErrorMessage(form, 'email') }}</mat-error>
         }
       </mat-form-field>
-
       <mat-form-field>
         <mat-label>Senha</mat-label>
         <input type="password" matInput formControlName="password" autocomplete="current-password" required>
@@ -22,7 +19,8 @@
         <mat-error> {{ _formUtilsSvc.getErrorMessage(form, 'password') }}</mat-error>
         }
       </mat-form-field>
-
+      <mat-checkbox color="primary" [labelPosition]="'after'" formControlName="remember">Lembre
+        de mim</mat-checkbox>
     </mat-card-content>
     <button type="submit" mat-flat-button color="primary">Entrar</button>
   </form>

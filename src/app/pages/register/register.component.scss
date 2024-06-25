@@ -1,23 +1,30 @@
 mat-card{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  border: none !important;
-}
-form{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-mat-card-content{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  margin-top: 6rem;
+  border-radius: 8px;
+
+mat-card-header{
+    display: flex;
+    justify-content: center;
+    mat-card-title{
+      font-size:1.3rem;
+    }
+  }
+  form{
+    display: flex;
+    flex-direction: column;
+    button{
+      width: 90%;
+      margin: 0 auto 2rem auto;
+    }
+  }
+  mat-card-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
-.btn-register{
-  margin-top: 2rem;
-}
+
+

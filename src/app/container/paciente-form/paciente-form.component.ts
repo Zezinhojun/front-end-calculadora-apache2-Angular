@@ -68,7 +68,7 @@ export default class PacienteFormComponent {
     this.form = this.fb.group({
       atendimento: new FormControl('', [Validators.required]),
       age: ['', [Validators.required]],
-      patologia: [''],
+      patologia: ['', Validators.required],
       internacao: ['', [Validators.required]],
       glim: ['', [Validators.required]],
       dignosticoGlim: [''],
