@@ -22,11 +22,10 @@ import { MatInputModule } from '@angular/material/input';
   styleUrl: './dialog.component.scss'
 })
 export class DialogComponent {
-  private _dialog = inject(MatDialog)
 
   constructor(
     public dialogRef: MatDialogRef<DialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: string,
+    @Inject(MAT_DIALOG_DATA) public data: { message: string }
   ) { }
 
   onConfirm(result: boolean): void {

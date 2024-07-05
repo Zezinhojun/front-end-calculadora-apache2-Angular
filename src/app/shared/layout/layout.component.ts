@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { SpinnerComponent } from '../../components/spinner/spinner.component';
+
 import { SpinnerService } from '../services/spinner/spinner.service';
 
 @Component({
@@ -18,7 +18,6 @@ import { SpinnerService } from '../services/spinner/spinner.service';
     MatButtonModule,
     MatToolbarModule,
     RouterLink,
-    SpinnerComponent
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
