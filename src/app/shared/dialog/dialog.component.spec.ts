@@ -15,7 +15,7 @@ describe('DialogComponent', () => {
       imports: [MatDialogModule],
       providers: [
         { provide: MatDialogRef, useValue: matDialogRefSpy },
-        { provide: MAT_DIALOG_DATA, useValue: { message: 'Test Message' } }
+        { provide: MAT_DIALOG_DATA, useValue: 'Test Message' }
       ]
     }).compileComponents();
 
@@ -34,7 +34,7 @@ describe('DialogComponent', () => {
   })
 
   it("should receive data from MatDialog", () => {
-    const testData = { message: "Test Message" };
+    const testData = "Test Message";
     expect(component.data).toEqual(testData);
   })
 
