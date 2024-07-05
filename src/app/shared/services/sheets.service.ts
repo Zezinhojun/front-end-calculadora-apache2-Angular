@@ -35,8 +35,8 @@ export class SheetsService {
     return this._http.get<any>(`${ApiGoogleSheetsEndpoint.GoogleSheets.Patology}`)
   }
 
-  getService(): Observable<any> {
-    return this._http.get<any>(`${ApiGoogleSheetsEndpoint.GoogleSheets.Service}`)
+  getTreatments(): Observable<any> {
+    return this._http.get<any>(`${ApiGoogleSheetsEndpoint.GoogleSheets.Treatments}`)
   }
 
   deleteRow(rowIndex: number): Observable<any> {

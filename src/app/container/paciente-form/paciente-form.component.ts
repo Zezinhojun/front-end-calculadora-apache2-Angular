@@ -261,7 +261,7 @@ export default class PacienteFormComponent {
 
   private checkService(): void {
     const serviceName = this.form.get('serviceName')?.value;
-    this._sheetSvc.getService().subscribe({
+    this._sheetSvc.getTreatments().subscribe({
       next: (data) => {
         const existingServices = data.values.map((item: any[]) => item[0]);
         this.serviceExists = existingServices.includes(serviceName);
@@ -282,9 +282,12 @@ export default class PacienteFormComponent {
   }
 
   private loadAtendimentos(): void {
-    this._sheetSvc.getService().subscribe({
+    console.log(this.atendimentoList);
+    this._sheetSvc.getTreatments().subscribe({
       next: (data) => {
+        console.log(this.atendimentoList);
         this.atendimentoList = data.values.map((item: any[]) => Number(item[0]));
+
       },
     });
   }
