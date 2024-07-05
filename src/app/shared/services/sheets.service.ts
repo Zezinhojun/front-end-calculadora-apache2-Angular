@@ -1,4 +1,3 @@
-import { IPaciente } from './../model/commom.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { Observable, take, tap } from 'rxjs';
@@ -10,7 +9,7 @@ import { ApiGoogleSheetsEndpoint } from '../constant';
 })
 export class SheetsService {
 
-  // public pacientes = signal<IPaciente[]>([])
+  public pacientes = signal<any>([])
   public totalElements = signal<number>(0)
   public totalPages = signal<number>(0)
   public isLoading = signal<boolean>(false)
@@ -26,7 +25,7 @@ export class SheetsService {
         tap(response => {
           this.totalElements.set(response.values.length);
           this.totalPages.set(Math.ceil(this.totalElements() / pageSize));
-          this.isLoading.set(false)
+          this.pacientes.set(response.values)
         })
       );
   }
@@ -35,8 +34,8 @@ export class SheetsService {
     return this._http.get<any>(`${ApiGoogleSheetsEndpoint.GoogleSheets.Patology}`)
   }
 
-  getService(): Observable<any> {
-    return this._http.get<any>(`${ApiGoogleSheetsEndpoint.GoogleSheets.Service}`)
+  getTreatments(): Observable<any> {
+    return this._http.get<any>(`${ApiGoogleSheetsEndpoint.GoogleSheets.Treatments}`)
   }
 
   deleteRow(rowIndex: number): Observable<any> {
