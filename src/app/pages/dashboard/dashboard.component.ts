@@ -16,6 +16,8 @@ import { AuthService } from '../../shared/services/auth.service';
 import { SheetsService } from '../../shared/services/sheets.service';
 import { SpinnerService } from '../../shared/services/spinner/spinner.service';
 import { DialogComponent } from './../../shared/dialog/dialog.component';
+import { PacientsListComponent } from '../../components/pacients-list/pacients-list.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 export interface Paciente {
   atendimento: number;
@@ -26,18 +28,19 @@ export interface Paciente {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatButtonModule, MatCardModule, MatIconModule, MatTableModule, MatToolbarModule, MatPaginatorModule],
+  imports: [MatButtonModule, MatCardModule, MatIconModule, MatTableModule, MatToolbarModule, MatPaginatorModule, PacientsListComponent, MatProgressSpinnerModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export default class DashboardComponent implements OnInit {
 
   dataSource = new MatTableDataSource<Paciente>()
+  private readonly _sheets = inject(SheetsService)
   private dialog = inject(MatDialog)
   displayedColumns: string[] = ['atendimento', 'idade', 'patologia', 'actions'];
   private readonly router = inject(Router)
-  private readonly _sheets = inject(SheetsService)
   private _snackBar = inject(MatSnackBar)
+  pacientes = this._sheets.pacientes
   _authSvc = inject(AuthService)
   user!: User
   _spinnerSvc = inject(SpinnerService)
@@ -58,7 +61,6 @@ export default class DashboardComponent implements OnInit {
     this.getTable();
   }
 
-
   private getTable() {
     this._spinnerSvc.show()
     this._sheets.getRows(this.pageIndex, this.pageSize).pipe(
@@ -78,7 +80,7 @@ export default class DashboardComponent implements OnInit {
         const startIndex = this.pageIndex * this.pageSize;
         const endIndex = startIndex + this.pageSize;
         const filteredData = paciente.slice(startIndex, endIndex);
-        this.dataSource.data = filteredData;
+        this.pacientes.set(filteredData);
         this.totalElements.set(this.totalElements());
         this._spinnerSvc.hide()
       });
@@ -130,5 +132,7 @@ export default class DashboardComponent implements OnInit {
   onAdd() {
     this.router.navigate(['patientform'])
   }
+
+  onEdit(paciente: []) { }
 
 }
