@@ -1,8 +1,8 @@
 @defer(when pacientes){
-<app-pacients-list (add)="onAdd()" (edit)="onEdit($event)" [pacientes]="pacientes()"></app-pacients-list>
+<app-pacients-list (add)="onAdd()" (edit)="onEdit($event)" [pacientes]="pacientes()"
+  (delete)="onDelete($event)"></app-pacients-list>
 <mat-paginator [length]="totalElements()" [pageIndex]="pageIndex" [pageSize]="pageSize" (page)="handlePageEvent($event)"
   [pageSizeOptions]="[5, 10, 15]" aria-label="Select page">
 </mat-paginator>
-
 }@placeholder {
 <mat-spinner></mat-spinner>}
