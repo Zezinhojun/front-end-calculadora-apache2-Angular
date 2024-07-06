@@ -22,6 +22,12 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface ISheetsResponse {
+  majorDimension: string;
+  range: string;
+  values: (string | number)[][];
+}
+
 export interface IPaciente {
   atendimento: number;
   idade: number;
