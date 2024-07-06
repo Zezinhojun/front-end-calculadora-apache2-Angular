@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { IPaciente } from '../../shared/model/commom.model';
 
 @Component({
   selector: 'app-pacients-list',
@@ -15,7 +16,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 })
 export class PacientsListComponent {
 
-  @Input() pacientes: any = []
+  @Input() pacientes: IPaciente[] = []
   @Output() add = new EventEmitter(false)
   @Output() edit = new EventEmitter(false)
   @Output() delete = new EventEmitter(false)

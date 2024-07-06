@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import moment from 'moment';
 import { map } from 'rxjs';
 
-import { User } from '../../shared/model/commom.model';
+import { IPaciente, User } from '../../shared/model/commom.model';
 import { AuthService } from '../../shared/services/auth.service';
 import { SheetsService } from '../../shared/services/sheets.service';
 import { SpinnerService } from '../../shared/services/spinner/spinner.service';

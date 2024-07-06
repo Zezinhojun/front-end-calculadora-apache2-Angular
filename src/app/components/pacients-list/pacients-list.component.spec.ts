@@ -21,7 +21,7 @@ describe('PacientsListComponent', () => {
       { atendimento: 23214, idade: 30, patologia: 'Teste 1' },
       { atendimento: 3456, idade: 45, patologia: 'Teste 2' },
       { atendimento: 123213, idade: 50, patologia: 'Teste 3' }
-    ];
+    ] as any;
     fixture.detectChanges();
   });
 

@@ -1,4 +1,4 @@
-import { Component, inject, model } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
+import { FormUserComponent } from '../../components/form-user/form-user.component';
+import { IFormFieldConfig } from '../../shared/model/formFieldConfig.model';
 import { AuthService } from '../../shared/services/auth.service';
 import { FormUtilsService } from '../../shared/services/form/form-utils.service';
 
@@ -23,17 +25,47 @@ import { FormUtilsService } from '../../shared/services/form/form-utils.service'
     MatFormFieldModule,
     ReactiveFormsModule,
     MatInputModule,
+    FormUserComponent
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export default class LoginComponent {
+  title = "Login"
+  fields: IFormFieldConfig[] = [
+    {
+
+      label: 'Email',
+      inputType: 'email',
+      formControlName: 'email',
+      name: 'email',
+      id: 'email',
+      autocomplete: 'username',
+      required: true
+    },
+    {
+      label: 'Senha',
+      inputType: 'password',
+      formControlName: 'password',
+      name: 'password',
+      id: 'password',
+      autocomplete: 'current-password',
+      required: true
+    },
+    {
+      label: 'Lembre-me',
+      formControlName: 'remember',
+      name: 'remember',
+      id: 'remember',
+      required: false
+    },
+  ];
+
   _formUtilsSvc = inject(FormUtilsService)
   private _authSvc = inject(AuthService)
   private _snackBar = inject(MatSnackBar)
   private router = inject(Router)
   public form!: FormGroup;
-
 
 
   constructor(private fb: FormBuilder) {

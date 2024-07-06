@@ -3,13 +3,14 @@ import { Injectable, signal } from '@angular/core';
 import { Observable, take, tap } from 'rxjs';
 
 import { ApiGoogleSheetsEndpoint } from '../constant';
+import { IPaciente } from '../model/commom.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SheetsService {
 
-  public pacientes = signal<any>([])
+  public pacientes = signal<IPaciente[]>([])
   public totalElements = signal<number>(0)
   public totalPages = signal<number>(0)
   public isLoading = signal<boolean>(false)
