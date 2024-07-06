@@ -1,53 +1,32 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { Router } from '@angular/router';
-import moment from 'moment';
-import { map } from 'rxjs';
-
-import { IPaciente, User } from '../../shared/model/commom.model';
-import { AuthService } from '../../shared/services/auth.service';
-import { SheetsService } from '../../shared/services/sheets.service';
-import { SpinnerService } from '../../shared/services/spinner/spinner.service';
-import { DialogComponent } from './../../shared/dialog/dialog.component';
-import { PacientsListComponent } from '../../components/pacients-list/pacients-list.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
-export interface Paciente {
-  atendimento: number;
-  idade: number;
-  patologia: string;
-  internacao: string;
-}
+import { PacientsListComponent } from '../../components/pacients-list/pacients-list.component';
+import { SheetsService } from '../../shared/services/sheets.service';
+import { DialogComponent } from './../../shared/dialog/dialog.component';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatButtonModule, MatCardModule, MatIconModule, MatTableModule, MatToolbarModule, MatPaginatorModule, PacientsListComponent, MatProgressSpinnerModule],
+  imports: [MatPaginatorModule, PacientsListComponent, MatProgressSpinnerModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export default class DashboardComponent implements OnInit {
 
-  dataSource = new MatTableDataSource<Paciente>()
   private readonly _sheets = inject(SheetsService)
-  private dialog = inject(MatDialog)
-  displayedColumns: string[] = ['atendimento', 'idade', 'patologia', 'actions'];
+  private readonly dialog = inject(MatDialog)
   private readonly router = inject(Router)
-  private _snackBar = inject(MatSnackBar)
-  pacientes = this._sheets.pacientes
-  _authSvc = inject(AuthService)
-  user!: User
-  _spinnerSvc = inject(SpinnerService)
+  private readonly _snackBar = inject(MatSnackBar)
+  public pacientes = this._sheets.pacientes
 
-  pageIndex = 0;
-  pageSize = 10;
-  pageEvent!: PageEvent;
+  public pageIndex = 0;
+  public pageSize = 10;
+  public pageEvent!: PageEvent;
   public totalElements = this._sheets.totalElements;
   public totalPages = this._sheets.totalPages
 
@@ -55,41 +34,30 @@ export default class DashboardComponent implements OnInit {
     this.getTable()
   }
 
-  handlePageEvent(e: PageEvent) {
+  public handlePageEvent(e: PageEvent) {
     this.pageIndex = e.pageIndex;
     this.pageSize = e.pageSize;
     this.getTable();
   }
 
-  private getTable() {
-    this._spinnerSvc.show()
-    this._sheets.getRows(this.pageIndex, this.pageSize).pipe(
-      map((data: any): Paciente[] => {
-        const paciente = data.values.map((item: any[]): Paciente => {
-          const dataInternacao = moment(item[3], 'DD/MM/YYYY HH:mm:ss').format('DD/MM/YYYY');
-          return {
-            atendimento: parseInt(item[0]),
-            idade: parseInt(item[1]),
-            patologia: item[2],
-            internacao: dataInternacao
-          };
-        });
-        return paciente;
-      }))
-      .subscribe(paciente => {
-        const startIndex = this.pageIndex * this.pageSize;
-        const endIndex = startIndex + this.pageSize;
-        const filteredData = paciente.slice(startIndex, endIndex);
-        this.pacientes.set(filteredData);
-        this.totalElements.set(this.totalElements());
-        this._spinnerSvc.hide()
+  private getTable(): void {
+    this._sheets.getRows(this.pageIndex, this.pageSize)
+      .subscribe(pacientes => {
+        this._sheets.pacientes.set(pacientes);
+        this._sheets.totalElements.set(this.totalElements());
       });
   }
 
+  public onAdd() {
+    this.router.navigate(['patientform'])
+  }
 
-  onDelete(index: number): void {
+  public onEdit(index: number): void {
+    // const lineId = index + 2 + (this.pageIndex * this.pageSize);
+  }
+
+  public onDelete(index: number): void {
     const dialogRef = this.dialog.open(DialogComponent);
-
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         if (result) {
@@ -121,18 +89,8 @@ export default class DashboardComponent implements OnInit {
     this.onCancel()
   }
 
-  onCancel() {
+  private onCancel() {
     this.router.navigate([''])
   }
-
-  logout() {
-    this._authSvc.logout()
-  }
-
-  onAdd() {
-    this.router.navigate(['patientform'])
-  }
-
-  onEdit(paciente: []) { }
 
 }

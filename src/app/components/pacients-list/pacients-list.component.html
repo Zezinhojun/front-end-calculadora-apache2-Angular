@@ -22,8 +22,8 @@
       </button>
     </mat-header-cell>
     <mat-cell *matCellDef="let element let i = index;" class="action-group">
-      <button mat-icon-button color="primary" aria-label="Editar paciente">
-        <mat-icon>edit</mat-icon>
+      <button mat-icon-button color="primary" aria-label="Editar paciente" (click)="onEdit(i)">
+        <mat-icon>edit </mat-icon>
       </button>
       <button mat-icon-button color="warn" aria-label="Remover paciente" (click)="onDelete(i)">
         <mat-icon>delete</mat-icon>
