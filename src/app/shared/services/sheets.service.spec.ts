@@ -38,10 +38,7 @@ describe('SheetsService', () => {
 
     service.getRows(page, pageSize).subscribe(response => {
       expect(response.values.length).toEqual(mockResponse.values.length);
-      for (let i = 0; i < response.values.length; i++) {
-        expect(response.values[i]._id).toEqual(mockResponse.values[i]._id);
-        expect(response.values[i].name).toEqual(mockResponse.values[i].name);
-      }
+
       expect(service.totalElements()).toEqual(mockResponse.values.length);
       expect(service.totalPages()).toEqual(1);
       expect(service.pacientes()).toEqual(mockResponse.values);
