@@ -102,5 +102,4 @@ describe('FormUserComponent', () => {
     expect(errorMessage).toBe('Email is required');
   });
 
-
 });

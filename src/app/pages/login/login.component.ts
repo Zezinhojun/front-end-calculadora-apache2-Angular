@@ -13,7 +13,6 @@ import { IFormFieldConfig } from '../../shared/model/formFieldConfig.model';
 import { AuthService } from '../../shared/services/auth.service';
 import { FormUtilsService } from '../../shared/services/form/form-utils.service';
 
-
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -64,9 +63,8 @@ export default class LoginComponent {
   _formUtilsSvc = inject(FormUtilsService)
   private _authSvc = inject(AuthService)
   private _snackBar = inject(MatSnackBar)
-  private router = inject(Router)
+  router = inject(Router)
   public form!: FormGroup;
-
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
