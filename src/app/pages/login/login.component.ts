@@ -1,10 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
@@ -17,13 +12,8 @@ import { FormUtilsService } from '../../shared/services/form/form-utils.service'
   selector: 'app-login',
   standalone: true,
   imports: [
-    MatCheckboxModule,
     FormsModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
     ReactiveFormsModule,
-    MatInputModule,
     FormUserComponent
   ],
   templateUrl: './login.component.html',

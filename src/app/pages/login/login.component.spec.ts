@@ -1,15 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import LoginComponent from './login.component';
-import { AuthService } from '../../shared/services/auth.service';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { FormUtilsService } from '../../shared/services/form/form-utils.service';
+
 import { ApiResponse, User } from '../../shared/model/commom.model';
+import { AuthService } from '../../shared/services/auth.service';
+import LoginComponent from './login.component';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -17,11 +16,10 @@ describe('LoginComponent', () => {
   let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockSnackBar: jasmine.SpyObj<MatSnackBar>;
   let mockRouter: jasmine.SpyObj<Router>;
-  let formBuilder: FormBuilder;
-  let mockFormUtilsService: jasmine.SpyObj<FormUtilsService>
+
 
   beforeEach(async () => {
-    mockAuthService = jasmine.createSpyObj('AuthService', ['login']); // Especificando os métodos que serão espiados
+    mockAuthService = jasmine.createSpyObj('AuthService', ['login']);
     mockSnackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
     mockRouter = jasmine.createSpyObj(['navigate']);
     await TestBed.configureTestingModule({
@@ -58,7 +56,9 @@ describe('LoginComponent', () => {
     spyOn(component._formUtilsSvc, 'validateAllFormFields');
     component.submit();
 
-    expect(component._formUtilsSvc.validateAllFormFields).toHaveBeenCalledWith(component.form);
+    expect(component._formUtilsSvc
+      .validateAllFormFields)
+      .toHaveBeenCalledWith(component.form);
   });
   it('should submit form when valid', () => {
     const loginData = {
@@ -76,7 +76,8 @@ describe('LoginComponent', () => {
     component.submit();
 
     expect(mockAuthService.login).toHaveBeenCalledWith(loginData);
-    expect(component['_snackBar'].open).toHaveBeenCalledWith('Usuário logado com sucesso', '', { duration: 2000 });
+    expect(component['_snackBar'].open)
+      .toHaveBeenCalledWith('Usuário logado com sucesso', '', { duration: 2000 });
     expect(component.router.navigate).toHaveBeenCalledWith(['']);
   })
 

@@ -31,6 +31,7 @@
       <mat-label>{{field.label}}</mat-label>
       <input matInput [type]="field.inputType" [formControlName]="field.formControlName" [name]="field.name"
         [id]="field.id" [autocomplete]="field.autocomplete" [required]="field.required">
+      <mat-hint align="end">{{ form.get(field.formControlName)?.value?.length || 0 }} / 15</mat-hint>
       @if(form.get(field.formControlName)?.invalid){
       <mat-error> {{ _formUtilsSvc.getErrorMessage(form, field.formControlName) }}</mat-error>
       }
