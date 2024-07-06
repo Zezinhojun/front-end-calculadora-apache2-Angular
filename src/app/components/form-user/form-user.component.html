@@ -1,0 +1,51 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>{{title}}</mat-card-title>
+  </mat-card-header>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    @for (field of fields; track $index) {
+    @switch (field.inputType) {
+    @case('text'){
+    <mat-form-field>
+      <mat-label>{{field.label}}</mat-label>
+      <input matInput [type]="field.inputType" [formControlName]="field.formControlName" [name]="field.name"
+        [id]="field.id" [autocomplete]="field.autocomplete" [required]="field.required">
+      @if(form.get(field.formControlName)?.invalid){
+      <mat-error> {{ _formUtilsSvc.getErrorMessage(form, field.formControlName) }}</mat-error>
+      }
+    </mat-form-field>
+    }
+    @case('email'){
+    <mat-form-field>
+      <mat-label>{{field.label}}</mat-label>
+      <input matInput [type]="field.inputType" [formControlName]="field.formControlName" [name]="field.name"
+        [id]="field.id" [autocomplete]="field.autocomplete" [required]="field.required">
+      @if(form.get(field.formControlName)?.invalid){
+      <mat-error> {{ _formUtilsSvc.getErrorMessage(form, field.formControlName) }}</mat-error>
+      }
+    </mat-form-field>
+    }
+
+    @case('password'){
+    <mat-form-field>
+      <mat-label>{{field.label}}</mat-label>
+      <input matInput [type]="field.inputType" [formControlName]="field.formControlName" [name]="field.name"
+        [id]="field.id" [autocomplete]="field.autocomplete" [required]="field.required">
+      <mat-hint align="end">{{ form.get(field.formControlName)?.value?.length || 0 }} / 15</mat-hint>
+      @if(form.get(field.formControlName)?.invalid){
+      <mat-error> {{ _formUtilsSvc.getErrorMessage(form, field.formControlName) }}</mat-error>
+      }
+    </mat-form-field>
+    }
+    @default{
+    <mat-checkbox [color]="field.color ?? 'primary'" [labelPosition]="'after'"
+      [formControlName]="field.formControlName">{{field.label}}</mat-checkbox>
+    }
+    }
+    <mat-card-content>
+    </mat-card-content>
+    }
+    <button type="submit" mat-flat-button color="primary">{{submitButtonText}}</button>
+  </form>
+
+</mat-card>

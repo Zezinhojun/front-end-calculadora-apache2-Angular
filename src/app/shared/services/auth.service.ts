@@ -18,7 +18,7 @@ export class AuthService {
   constructor(private _http: HttpClient, @Inject(DOCUMENT) private document: Document) {
     const localStorage = this.document.defaultView?.localStorage;
     if (localStorage?.getItem(LocalStorage.token)) {
-      this.isLoggedIn.update(() => true)
+      this.isLoggedIn.set(true)
     }
   }
 
@@ -42,7 +42,7 @@ export class AuthService {
         map((response) => {
           if (response?.token) {
             localStorage.setItem(LocalStorage.token, response.token);
-            this.isLoggedIn.update(() => true);
+            this.isLoggedIn.set(true);
           }
           return response;
         }),
@@ -61,7 +61,7 @@ export class AuthService {
   }
   logout() {
     localStorage.removeItem(LocalStorage.token)
-    this.isLoggedIn.update(() => false)
+    this.isLoggedIn.set(false)
     this.router.navigate(['login'])
   }
 }

@@ -1,28 +1,58 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
+import { IFormFieldConfig } from '../../shared/model/formFieldConfig.model';
 import { AuthService } from '../../shared/services/auth.service';
 import { FormUtilsService } from '../../shared/services/form/form-utils.service';
+import { FormUserComponent } from './../../components/form-user/form-user.component';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
+  imports: [FormUserComponent, ReactiveFormsModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
 export default class RegisterComponent {
-  form!: FormGroup;
+  title = "Cadastro"
+  fields: IFormFieldConfig[] = [
+    {
+      label: 'Nome',
+      inputType: 'text',
+      formControlName: 'name',
+      name: 'name',
+      id: 'name',
+      autocomplete: 'name',
+      required: true
+    },
+    {
+      label: 'Email',
+      inputType: 'email',
+      formControlName: 'email',
+      name: 'email',
+      id: 'email',
+      autocomplete: 'username',
+      required: true
+    },
+    {
+      label: 'Senha',
+      inputType: 'password',
+      formControlName: 'password',
+      name: 'password',
+      id: 'password',
+      autocomplete: 'current-password',
+      required: true
+    },
+  ];
+
+  public form!: FormGroup;
   private _snackBar = inject(MatSnackBar)
-  _formUtilsSvc = inject(FormUtilsService)
-  _authSvc = inject(AuthService)
-  router = inject(Router)
+  private _formUtilsSvc = inject(FormUtilsService)
+  private _authSvc = inject(AuthService)
+  readonly router = inject(Router)
+
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       name: new FormControl('', [Validators.required]),
@@ -40,11 +70,11 @@ export default class RegisterComponent {
     this.onCancel()
   }
 
-  onCancel() {
+  public onCancel() {
     this.router.navigate(['login'])
   }
 
-  submit() {
+  public submit() {
     if (this.form.valid) {
       this._authSvc.register(this.form.value).subscribe({
         next: () => this.onSuccess(),
