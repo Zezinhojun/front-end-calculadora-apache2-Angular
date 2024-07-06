@@ -1,19 +1,16 @@
-import { Component, effect, inject, Injector, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { AuthService } from '../services/auth.service';
 
-import { SpinnerService } from '../services/spinner/spinner.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
   imports: [
     RouterOutlet,
-    MatGridListModule,
     MatIconModule,
     MatButtonModule,
     MatToolbarModule,
@@ -23,18 +20,14 @@ import { SpinnerService } from '../services/spinner/spinner.service';
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent implements OnInit {
-  _authSvc = inject(AuthService)
-  _spinnerSvc = inject(SpinnerService)
-  isLoading = this._spinnerSvc.isLoading
-  isLoggedin = false
-  injector = inject(Injector)
-  ngOnInit(): void {
-    effect(() => {
-      this.isLoggedin = this._authSvc.isLoggedIn()
-    }, { injector: this.injector })
-  }
-  logout() {
-    this._authSvc.logout()
-  }
+  private readonly _authSvc = inject(AuthService)
+
+  public isLoggedIn = this._authSvc.isLoggedIn
+
+  ngOnInit = () => this.checkLoginStatus()
+
+  private checkLoginStatus = () => this.isLoggedIn
+
+  public logout = () => this._authSvc.logout()
 
 }
