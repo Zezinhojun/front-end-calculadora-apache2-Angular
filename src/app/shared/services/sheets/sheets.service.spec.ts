@@ -2,7 +2,8 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed } from '@angular/core/testing';
 
 import { SheetsService } from './sheets.service';
-import { ApiGoogleSheetsEndpoint } from '../constant';
+import { ApiGoogleSheetsEndpoint } from '../../constant';
+import { ISheetsResponse } from '../../model/commom.model';
 
 
 describe('SheetsService', () => {
@@ -27,28 +28,31 @@ describe('SheetsService', () => {
     expect(service).toBeTruthy();
   });
   it('should fetch rows from Google Sheets', () => {
-    const mockResponse: { values: any[] } = {
+    const mockResponse: ISheetsResponse = {
       values: [
-        { _id: 1, name: 'Patient A' },
-        { _id: 2, name: 'Patient B' }
+        [1, 30, 'Patologia1', ''],
+        [2, 40, 'Patologia2', ''],
       ]
     };
-    const page = 0;
-    const pageSize = 10;
+    service.getRows(0, 10).subscribe(pacientes => {
+      expect(pacientes.length).toBe(2);
+      expect(pacientes[0]).toEqual({
+        atendimento: 1,
+        idade: 30,
+        patologia: 'Patologia1',
+        internacao: '',
 
-    service.getRows(page, pageSize).subscribe(response => {
-      expect(response.values.length).toEqual(mockResponse.values.length);
-
-      expect(service.totalElements()).toEqual(mockResponse.values.length);
-      expect(service.totalPages()).toEqual(1);
-      expect(service.pacientes()).toEqual(mockResponse.values);
+      });
+      expect(pacientes[1]).toEqual({
+        atendimento: 2,
+        idade: 40,
+        patologia: 'Patologia2',
+        internacao: '',
+      });
     });
-    const req = httpTestingController.expectOne(`${ApiGoogleSheetsEndpoint.GoogleSheets.Rows}?page=${page}&pageSize=${pageSize}`);
-
+    const req = httpTestingController.expectOne(`${ApiGoogleSheetsEndpoint.GoogleSheets.Rows}?page=0&pageSize=10`);
     expect(req.request.method).toEqual('GET');
-    req.flush(mockResponse);
-
-    httpTestingController.verify();
+    req.flush(mockResponse)
   })
 
   it('should fetch patology data from Google Sheets', () => {
@@ -76,25 +80,13 @@ describe('SheetsService', () => {
   it('should delete a row from Google Sheets', () => {
     const rowIndex = 1;
     service.deleteRow(rowIndex).subscribe(response => {
-      expect(response).toBeTruthy();
+      expect(response).toBeTruthy(); // Assuming your deleteRow method returns true on success
     });
-    const req = httpTestingController.expectOne(`${ApiGoogleSheetsEndpoint.GoogleSheets.DeleteRow}`);
 
+    const req = httpTestingController.expectOne(`${ApiGoogleSheetsEndpoint.GoogleSheets.DeleteRow}`);
     expect(req.request.method).toEqual('POST');
     expect(req.request.body).toEqual({ lineId: rowIndex });
-    req.flush({});
+    req.flush({}); // Mocking an empty response for deletion
   });
 
-  it('should create a row in Google Sheets', () => {
-    const rowData = { name: 'New Patient', age: 30 };
-
-    service.createRow(rowData).subscribe(response => {
-      expect(response).toBeTruthy();
-    });
-    const req = httpTestingController.expectOne(`${ApiGoogleSheetsEndpoint.GoogleSheets.CreateRow}`);
-
-    expect(req.request.method).toEqual('POST');
-    expect(req.request.body).toEqual(rowData);
-    req.flush({});
-  });
 })

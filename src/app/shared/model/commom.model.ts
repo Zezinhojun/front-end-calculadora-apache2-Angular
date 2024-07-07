@@ -23,14 +23,14 @@ export interface ApiResponse<T> {
 }
 
 export interface ISheetsResponse {
-  majorDimension: string;
-  range: string;
+  majorDimension?: string;
+  range?: string;
   values: (string | number)[][];
 }
 
 export interface IPaciente {
   atendimento: number;
   idade: number;
-  internacao: string
+  internacao?: string
   patologia: string
 }

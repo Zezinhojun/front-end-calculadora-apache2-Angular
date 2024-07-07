@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 import { PacientsListComponent } from '../../components/pacients-list/pacients-list.component';
-import { SheetsService } from '../../shared/services/sheets.service';
+import { SheetsService } from '../../shared/services/sheets/sheets.service';
 import { DialogComponent } from './../../shared/dialog/dialog.component';
 
 @Component({

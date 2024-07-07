@@ -17,7 +17,7 @@ import moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
 
 import { FormUtilsService } from '../../shared/services/form/form-utils.service';
-import { SheetsService } from '../../shared/services/sheets.service';
+import { SheetsService } from '../../shared/services/sheets/sheets.service';
 
 
 export interface TabelaAPache {
@@ -259,35 +259,10 @@ export default class PacienteFormComponent {
     });
   }
 
-  private checkService(): void {
-    const serviceName = this.form.get('serviceName')?.value;
-    this._sheetSvc.getTreatments().subscribe({
-      next: (data) => {
-        const existingServices = data.values.map((item: any[]) => item[0]);
-        this.serviceExists = existingServices.includes(serviceName);
-        if (this.serviceExists) {
-          console.warn('Serviço já existe na lista:', serviceName);
-        } else {
-          console.log('Serviço não existe, pode prosseguir:', serviceName);
-        }
-      },
-      error: (err) => {
-        console.error('Erro ao buscar serviços:', err);
-      }
-    });
-  }
-
-  private getFieldValue(fieldName: string) {
-    return this.form.get(fieldName)?.value;
-  }
-
   private loadAtendimentos(): void {
-    console.log(this.atendimentoList);
     this._sheetSvc.getTreatments().subscribe({
       next: (data) => {
-        console.log(this.atendimentoList);
         this.atendimentoList = data.values.map((item: any[]) => Number(item[0]));
-
       },
     });
   }
