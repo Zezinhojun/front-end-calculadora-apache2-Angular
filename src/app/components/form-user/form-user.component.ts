@@ -7,24 +7,25 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 import { IFormFieldConfig } from '../../shared/model/formFieldConfig.model';
-import { FormUtilsService } from '../../shared/services/form/form-utils.service';
+import { FormUtilsService } from '../../shared/services/form-utils/form-utils.service';
 
 @Component({
   selector: 'app-form-user',
   standalone: true,
-  imports: [MatButtonModule,
+  imports: [
+    MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
     MatFormFieldModule,
     MatFormFieldModule,
     MatInputModule,
-    ReactiveFormsModule],
+    ReactiveFormsModule,
+  ],
   templateUrl: './form-user.component.html',
-  styleUrl: './form-user.component.scss'
+  styleUrl: './form-user.component.scss',
 })
 export class FormUserComponent {
-
-  _formUtilsSvc = inject(FormUtilsService)
+  _formUtilsSvc = inject(FormUtilsService);
   @Input() title!: string;
   @Input() form!: FormGroup;
   @Input() fields!: IFormFieldConfig[];
@@ -32,7 +33,6 @@ export class FormUserComponent {
   @Output() formSubmit = new EventEmitter<void>();
 
   submit = (): any => this.formSubmit.emit();
-
 
   getErrorMessage(controlName: string): string {
     return this._formUtilsSvc.getErrorMessage(this.form, controlName);

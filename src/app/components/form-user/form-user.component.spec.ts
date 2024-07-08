@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormUserComponent } from './form-user.component';
-import { FormUtilsService } from '../../shared/services/form/form-utils.service';
+import { FormUtilsService } from '../../shared/services/form-utils/form-utils.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -11,7 +11,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 
 describe('FormUserComponent', () => {
   let component: FormUserComponent;
@@ -23,7 +22,10 @@ describe('FormUserComponent', () => {
   let formBuilder: FormBuilder;
 
   beforeEach(async () => {
-    mockFormUtilsService = jasmine.createSpyObj(['getErrorMessage', 'validateAllFormFields']);
+    mockFormUtilsService = jasmine.createSpyObj([
+      'getErrorMessage',
+      'validateAllFormFields',
+    ]);
     mockAuthService = jasmine.createSpyObj(['login']);
     mockSnackBar = jasmine.createSpyObj(['open']);
     mockRouter = jasmine.createSpyObj(['navigate']);
@@ -44,11 +46,10 @@ describe('FormUserComponent', () => {
         { provide: FormUtilsService, useValue: mockFormUtilsService },
         { provide: AuthService, useValue: mockAuthService },
         { provide: MatSnackBar, useValue: mockSnackBar },
-        { provide: Router, useValue: mockRouter }
-      ]
+        { provide: Router, useValue: mockRouter },
+      ],
     })
-
-      .compileComponents();
+    .compileComponents();
 
     formBuilder = TestBed.inject(FormBuilder);
     fixture = TestBed.createComponent(FormUserComponent);
@@ -56,7 +57,7 @@ describe('FormUserComponent', () => {
 
     const formGroup = formBuilder.group({
       email: '',
-      password: ''
+      password: '',
     });
 
     component.form = formGroup;
@@ -69,7 +70,7 @@ describe('FormUserComponent', () => {
         name: 'email',
         id: 'email',
         autocomplete: 'username',
-        required: true
+        required: true,
       },
       {
         label: 'Senha',
@@ -78,8 +79,8 @@ describe('FormUserComponent', () => {
         name: 'password',
         id: 'password',
         autocomplete: 'current-password',
-        required: true
-      }
+        required: true,
+      },
     ];
 
     fixture.detectChanges();
@@ -89,7 +90,7 @@ describe('FormUserComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it("should emit submit", () => {
+  it('should emit submit', () => {
     spyOn(component.formSubmit, 'emit');
     component.submit();
     expect(component.formSubmit.emit).toHaveBeenCalled();
@@ -101,5 +102,4 @@ describe('FormUserComponent', () => {
     const errorMessage = component.getErrorMessage(controlName);
     expect(errorMessage).toBe('Email is required');
   });
-
 });

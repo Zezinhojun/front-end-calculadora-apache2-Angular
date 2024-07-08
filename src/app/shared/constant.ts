@@ -1,5 +1,5 @@
-// const apiUrls = 'https://back-end-calculadora-apache2-angular.onrender.com/api'
-const apiUrls = 'http://localhost:3000/api';
+const apiUrls = 'https://back-end-calculadora-apache2-angular.onrender.com/api';
+// const apiUrls = 'http://localhost:3000/api';
 
 export const ApiEndpoint = {
   Auth: {
