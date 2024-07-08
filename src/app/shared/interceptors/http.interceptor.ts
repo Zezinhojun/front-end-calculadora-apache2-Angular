@@ -5,7 +5,7 @@ import { catchError, retry, throwError } from 'rxjs';
 
 import { Router } from '@angular/router';
 import { LocalStorage } from '../constant';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth/auth.service';
 
 export const httpInterceptor: HttpInterceptorFn = (req, next) => {
 

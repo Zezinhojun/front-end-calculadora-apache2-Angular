@@ -1,11 +1,12 @@
 export interface CommonFields {
   email: string;
-  password: string;
+  password?: string;
 }
 
 export interface User extends CommonFields {
   _id: string;
   name: string;
+  token?: string;
 }
 
 export interface LoginPayload extends CommonFields { }
@@ -16,6 +17,7 @@ export interface RegisterPayload extends CommonFields {
 
 export interface ApiResponse<T> {
   status?: boolean;
+  success?: boolean;
   token?: string;
   message?: string;
   error?: string;

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormUserComponent } from './form-user.component';
 import { FormUtilsService } from '../../shared/services/form/form-utils.service';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../shared/services/auth/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';

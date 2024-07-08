@@ -6,13 +6,11 @@ export default class PacienteMapper {
     const dataInternacao = moment(values[3] as string, 'DD/MM/YYYY HH:mm:ss').isValid()
       ? moment(values[3] as string, 'DD/MM/YYYY HH:mm:ss').format('DD/MM/YYYY')
       : '';
-
     return {
       atendimento: Number(values[0]),
       idade: Number(values[1]),
       patologia: values[2] as string,
       internacao: dataInternacao,
-
     };
   }
 }

@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
 import { ApiResponse, User } from '../../shared/model/commom.model';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../shared/services/auth/auth.service';
 import LoginComponent from './login.component';
 
 describe('LoginComponent', () => {

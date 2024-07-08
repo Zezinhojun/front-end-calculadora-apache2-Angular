@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LayoutComponent } from './layout.component';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth/auth.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -10,7 +10,6 @@ describe('LayoutComponent', () => {
   let component: LayoutComponent;
   let fixture: ComponentFixture<LayoutComponent>;
   let authService: AuthService
-  let activatedRoute: ActivatedRoute;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -37,7 +36,7 @@ describe('LayoutComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call logout) when logout is called', () => {
+  it('should call logout when logout is called', () => {
     spyOn(authService, 'logout');
     component.logout();
     expect(authService.logout).toHaveBeenCalled();

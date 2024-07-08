@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 
 import { FormUserComponent } from '../../components/form-user/form-user.component';
 import { IFormFieldConfig } from '../../shared/model/formFieldConfig.model';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../shared/services/auth/auth.service';
 import { FormUtilsService } from '../../shared/services/form/form-utils.service';
 
 @Component({
