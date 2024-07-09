@@ -1,17 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import PacienteFormComponent from './paciente-form.component';
 import {
   HttpClientTestingModule,
   HttpTestingController,
 } from '@angular/common/http/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BehaviorSubject, of } from 'rxjs';
+
 import { FormUtilsService } from '../../shared/services/form-utils/form-utils.service';
 import { SheetsService } from '../../shared/services/sheets/sheets.service';
-import { BehaviorSubject, of } from 'rxjs';
-import { formatDate } from '@angular/common';
+import PacienteFormComponent from './paciente-form.component';
 
 describe('PacienteFormComponent', () => {
   let httpTestingController: HttpTestingController;

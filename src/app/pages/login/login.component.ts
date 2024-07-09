@@ -75,7 +75,7 @@ export default class LoginComponent {
     this.onCancel();
   }
 
-  onCancel() {
+  private onCancel() {
     this.router.navigate(['']);
   }
 
