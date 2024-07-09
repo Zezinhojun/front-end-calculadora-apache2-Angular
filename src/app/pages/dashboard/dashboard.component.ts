@@ -56,8 +56,10 @@ export default class DashboardComponent implements OnInit {
     this.router.navigate(['patientform']);
   }
 
-  public onEdit(index: number): void {
-    // const lineId = index + 2 + (this.pageIndex * this.pageSize);
+  public onEdit(lineId: number): void {
+    const index = lineId + 2 + this.pageIndex * this.pageSize;
+    console.log(index);
+    this.router.navigate(['edit', index]);
   }
 
   public onDelete(index: number): void {

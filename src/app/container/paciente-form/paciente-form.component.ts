@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -29,7 +28,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
 import { FormUtilsService } from '../../shared/services/form-utils/form-utils.service';
@@ -37,6 +36,7 @@ import PacienteMapper from '../../shared/services/mappers/pacients-mapper';
 import { PacienteService } from '../../shared/services/paciente/paciente.service';
 import { SheetsService } from '../../shared/services/sheets/sheets.service';
 import { ResultTableComponent } from '../../components/result-table/result-table.component';
+import { IPaciente } from '../../shared/model/commom.model';
 
 @Component({
   selector: 'app-paciente-form',
@@ -70,6 +70,7 @@ export default class PacienteFormComponent implements OnInit {
   private readonly router = inject(Router);
   private uniqueFieldValues: Record<string, number> = {};
   private atendimentoList: number[] = [];
+
   private readonly _pacienteSvc = inject(PacienteService);
   public _formUtilsSvc = inject(FormUtilsService);
 
@@ -78,40 +79,96 @@ export default class PacienteFormComponent implements OnInit {
   public isLoading = this._sheetSvc.isLoading;
   public form!: FormGroup;
   public totalApache = new BehaviorSubject(0);
+  route = inject(ActivatedRoute);
+  paciente: IPaciente | undefined;
 
   ngOnInit(): void {
-    this.initializeForm();
     this.getPatology();
     this.getTreatments();
     this._pacienteSvc.fetchTreatments();
+    const pacienteData = this.route.snapshot.data['paciente'].values;
+
+    const paciente: IPaciente =
+      pacienteData && pacienteData.length > 0
+        ? {
+            atendimento: pacienteData[0][0].toString(),
+            idade: pacienteData[0][1],
+            patologia: pacienteData[0][2],
+            internacao: PacienteMapper.parseDate(pacienteData[0][3]),
+            glim: PacienteMapper.parseDate(pacienteData[0][4]),
+            dignosticoGlim: pacienteData[0][5].toString(),
+            desfecho: pacienteData[0][6].toString(),
+            sexo: pacienteData[0][7].toString(),
+            falenciaOrImuno: pacienteData[0][9].toString(),
+            temperatura: pacienteData[0][10].toString(),
+            pressao: pacienteData[0][11].toString(),
+            freqCardiaca: pacienteData[0][12].toString(),
+            freqRespiratoria: pacienteData[0][13].toString(),
+            pao2: pacienteData[0][14].toString(),
+            phOrHco3: pacienteData[0][15].toString(),
+            sodio: pacienteData[0][16].toString(),
+            potassio: pacienteData[0][17].toString(),
+            creatinina: pacienteData[0][18].toString(),
+            hematocrito: pacienteData[0][19].toString(),
+            leucocitos: pacienteData[0][20].toString(),
+            glasgow: pacienteData[0][21].toString(),
+            ageApache: pacienteData[0][22].toString(),
+            criticalHealth: pacienteData[0][23].toString(),
+          }
+        : {
+            atendimento: '',
+            idade: '',
+            patologia: '',
+            internacao: '',
+            glim: '',
+            dignosticoGlim: '',
+            desfecho: '',
+            sexo: '',
+            falenciaOrImuno: '',
+            temperatura: '',
+            pressao: '',
+            freqCardiaca: '',
+            freqRespiratoria: '',
+            pao2: '',
+            phOrHco3: '',
+            sodio: '',
+            potassio: '',
+            creatinina: '',
+            hematocrito: '',
+            leucocitos: '',
+            glasgow: '',
+            ageApache: '',
+            criticalHealth: '',
+          };
+    this.initializeForm(paciente);
   }
 
-  initializeForm(): void {
+  initializeForm(paciente: IPaciente): void {
     this.form = this.fb.group({
-      atendimento: new FormControl('', [Validators.required]),
-      age: ['', [Validators.required]],
-      patologia: ['', Validators.required],
-      internacao: ['', [Validators.required]],
-      glim: ['', [Validators.required]],
-      dignosticoGlim: [''],
-      desfecho: [''],
-      sexo: [''],
+      atendimento: [paciente.atendimento, [Validators.required]],
+      age: [paciente.idade, [Validators.required]],
+      patologia: [paciente.patologia, Validators.required],
+      internacao: [paciente.internacao, [Validators.required]],
+      glim: [paciente.glim, [Validators.required]],
+      dignosticoGlim: [paciente.dignosticoGlim],
+      desfecho: [paciente.desfecho],
+      sexo: [paciente.sexo],
       tempoDeInternacao: [''],
-      falenciaOrImuno: [''],
-      temperatura: [''],
-      pressao: [''],
-      freqCardiaca: [''],
-      freqRespiratoria: [''],
-      pao2: [''],
-      phOrHco3: [''],
-      sodio: [''],
-      potassio: [''],
-      creatinina: [''],
-      hematocrito: [''],
-      leucocitos: [''],
-      glasgow: [''],
-      ageApache: [''],
-      criticalHealth: [''],
+      falenciaOrImuno: [paciente.falenciaOrImuno],
+      temperatura: [paciente.temperatura],
+      pressao: [paciente.pressao],
+      freqCardiaca: [paciente.freqCardiaca],
+      freqRespiratoria: [paciente.freqRespiratoria],
+      pao2: [paciente.pao2],
+      phOrHco3: [paciente.phOrHco3],
+      sodio: [paciente.sodio],
+      potassio: [paciente.potassio],
+      creatinina: [paciente.creatinina],
+      hematocrito: [paciente.hematocrito],
+      leucocitos: [paciente.leucocitos],
+      glasgow: [paciente.glasgow],
+      ageApache: [paciente.ageApache],
+      criticalHealth: [paciente.criticalHealth],
       totalApache: [this.totalApache.value],
       campaignOne: this.fb.group({
         start: [null],

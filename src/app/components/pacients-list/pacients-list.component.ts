@@ -10,23 +10,28 @@ import { IPaciente } from '../../shared/model/commom.model';
 @Component({
   selector: 'app-pacients-list',
   standalone: true,
-  imports: [MatToolbarModule, MatTableModule, MatPaginatorModule, MatIconModule, MatCardModule, MatButtonModule],
+  imports: [
+    MatToolbarModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatIconModule,
+    MatCardModule,
+    MatButtonModule,
+  ],
   templateUrl: './pacients-list.component.html',
-  styleUrl: './pacients-list.component.scss'
+  styleUrl: './pacients-list.component.scss',
 })
 export class PacientsListComponent {
-
-  @Input() pacientes: IPaciente[] = []
-  @Output() add = new EventEmitter(false)
-  @Output() edit = new EventEmitter(false)
-  @Output() delete = new EventEmitter(false)
+  @Input() pacientes: IPaciente[] = [];
+  @Output() add = new EventEmitter(false);
+  @Output() edit = new EventEmitter(false);
+  @Output() delete = new EventEmitter(false);
 
   displayedColumns: string[] = ['atendimento', 'idade', 'patologia', 'actions'];
 
-  onAdd = () => this.add.emit(true)
+  onAdd = () => this.add.emit(true);
 
-  onEdit = (element: any) => this.edit.emit(element)
+  onEdit = (lineId: number) => this.edit.emit(lineId);
 
-  onDelete = (element: any) => this.delete.emit(element)
-
+  onDelete = (element: any) => this.delete.emit(element);
 }

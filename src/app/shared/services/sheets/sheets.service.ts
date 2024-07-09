@@ -18,8 +18,17 @@ export class SheetsService implements ISheetService {
 
   constructor(private _http: HttpClient) {}
 
-  updateRow(lineId: number): Observable<IPaciente> {
-    throw new Error('Method not implemented.');
+  findRow(lineId: number): Observable<IPaciente> {
+    return this._http.get<IPaciente>(
+      `${ApiGoogleSheetsEndpoint.GoogleSheets.Row}/${lineId}`,
+    );
+  }
+
+  updateRow(lineId: number, record: IPaciente): Observable<IPaciente> {
+    return this._http.put<IPaciente>(
+      `${ApiGoogleSheetsEndpoint.GoogleSheets.Row}/${lineId}`,
+      record,
+    );
   }
 
   getRows(page: number = 0, pageSize: number = 10): Observable<IPaciente[]> {

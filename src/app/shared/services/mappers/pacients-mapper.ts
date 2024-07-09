@@ -9,6 +9,10 @@ export default class PacienteMapper {
   static formatDate(date: any): string {
     return moment(date).format('DD/MM/YYYY');
   }
+  static parseDate(dateString: string): Date | null {
+    const parsedDate = moment(dateString, 'DD/MM/YYYY', true);
+    return parsedDate.isValid() ? parsedDate.toDate() : null;
+  }
 
   static findLineForValue(
     value: number,
@@ -25,19 +29,65 @@ export default class PacienteMapper {
     }
     return null;
   }
-
   static fromSheetsResponse(values: (string | number)[]): IPaciente {
-    const dataInternacao = moment(
-      values[3] as string,
-      'DD/MM/YYYY HH:mm:ss',
-    ).isValid()
-      ? moment(values[3] as string, 'DD/MM/YYYY HH:mm:ss').format('DD/MM/YYYY')
-      : '';
+    const atendimento = Number(values[0]);
+    const idade = Number(values[1]);
+    const patologia = values[2].toString();
+    const dignosticoGlim = values[5].toString();
+    const desfecho = values[6].toString();
+    const sexo = values[7].toString();
+    const falenciaOrImuno = values[9].toString();
+    const temperatura = values[10].toString();
+    const pressao = values[11].toString();
+    const freqCardiaca = values[12].toString();
+    const freqRespiratoria = values[13].toString();
+    const pao2 = values[14].toString();
+    const phOrHco3 = values[15].toString();
+    const sodio = values[16].toString();
+    const potassio = values[17].toString();
+    const creatinina = values[18].toString();
+    const hematocrito = values[19].toString();
+    const leucocitos = values[20].toString();
+    const ageApache = values[21].toString();
+    const glasgow = values[22].toString();
+    const criticalHealth = values[23].toString();
+
+    let internacao: Date | null = null;
+    if (values[3] && typeof values[3] === 'string') {
+      const dataInternacao = moment(values[3], 'DD/MM/YYYY HH:mm:ss', true);
+      internacao = dataInternacao.isValid() ? dataInternacao.toDate() : null;
+    }
+
+    let glim: Date | null = null;
+    if (values[4] && typeof values[4] === 'string') {
+      const dataGlim = moment(values[4], 'DD/MM/YYYY HH:mm:ss', true);
+      glim = dataGlim.isValid() ? dataGlim.toDate() : null;
+    }
+
     return {
-      atendimento: Number(values[0]),
-      idade: Number(values[1]),
-      patologia: values[2] as string,
-      internacao: dataInternacao,
+      atendimento,
+      idade,
+      patologia,
+      internacao,
+      glim,
+      dignosticoGlim,
+      desfecho,
+      sexo,
+      falenciaOrImuno,
+      temperatura,
+      pressao,
+      freqCardiaca,
+      freqRespiratoria,
+      pao2,
+      phOrHco3,
+      sodio,
+      potassio,
+      creatinina,
+      hematocrito,
+      leucocitos,
+      glasgow,
+      ageApache,
+      criticalHealth,
     };
   }
 
