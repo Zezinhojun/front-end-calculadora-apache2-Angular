@@ -15,7 +15,7 @@ export const ApiGoogleSheetsEndpoint = {
     Rows: `${apiUrls}/googlesheets/rows`,
     Patology: `${apiUrls}/googlesheets/patology`,
     Treatments: `${apiUrls}/googlesheets/treatments`,
-    Row: `${apiUrls}/googlesheets/row/:lineId`,
+    Row: `${apiUrls}/googlesheets/row`,
     CreateRow: `${apiUrls}/googlesheets/addrow`,
     Updatevalue: `${apiUrls}/googlesheets/updatevalue`,
     DeleteRow: `${apiUrls}/googlesheets/dashboard/delete`,
