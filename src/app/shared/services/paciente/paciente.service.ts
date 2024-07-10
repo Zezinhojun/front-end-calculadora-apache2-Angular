@@ -12,8 +12,11 @@ export class PacienteService {
 
   createPaciente(formData: any) {
     const requestBody = PacienteMapper.formatFormData(formData);
-    const lineId = 'ID_DO_PACIENTE'; // Substitua isso pelo mecanismo real para obter o lineId
-    return this._sheetSvc.createRow(requestBody);
+    return this._sheetSvc.save(requestBody);
+  }
+
+  updatePaciente(dataToUpdate: any): Observable<any> {
+    return this._sheetSvc.save(dataToUpdate);
   }
 
   filterPatologies(patologies: string[], filterValue: string): string[] {

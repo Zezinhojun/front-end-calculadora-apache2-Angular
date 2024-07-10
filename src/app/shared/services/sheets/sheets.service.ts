@@ -24,10 +24,14 @@ export class SheetsService implements ISheetService {
     );
   }
 
-  updateRow(lineId: number, record: IPaciente): Observable<IPaciente> {
+  updateRow(lineId: number, records: IPaciente): Observable<IPaciente> {
+    const body = {
+      lineId: lineId,
+      values: records,
+    };
     return this._http.put<IPaciente>(
-      `${ApiGoogleSheetsEndpoint.GoogleSheets.Row}/${lineId}`,
-      record,
+      `${ApiGoogleSheetsEndpoint.GoogleSheets.Updatevalue}`,
+      body,
     );
   }
 
@@ -72,10 +76,25 @@ export class SheetsService implements ISheetService {
     );
   }
 
-  createRow(data: any) {
+  save(data: any): Observable<any> {
+    if (data.lineId) {
+      return this.update(data);
+    } else {
+      return this.create(data);
+    }
+  }
+
+  private create(record: Partial<IPaciente>) {
     return this._http.post(
       `${ApiGoogleSheetsEndpoint.GoogleSheets.CreateRow}`,
-      data,
+      record,
+    );
+  }
+
+  private update(dataToUpdate: any): Observable<any> {
+    return this._http.post(
+      `${ApiGoogleSheetsEndpoint.GoogleSheets.Updatevalue}`,
+      { ...dataToUpdate },
     );
   }
 }

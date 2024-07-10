@@ -7,6 +7,6 @@ export default interface ISheetService {
   getTreatments(): Observable<any>;
   findRow(lineId: number): Observable<IPaciente>;
   deleteRow(lineId: number): Observable<any>;
-  createRow(lineId: string, record: Partial<IPaciente>): Observable<Object>;
+  save(record: Partial<IPaciente>): Observable<Object>;
   updateRow(lineId: number, record: IPaciente): Observable<IPaciente>;
 }

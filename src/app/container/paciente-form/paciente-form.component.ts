@@ -1,3 +1,4 @@
+import { PacienteService } from './../../shared/services/paciente/paciente.service';
 import {
   Component,
   ElementRef,
@@ -33,7 +34,6 @@ import { BehaviorSubject } from 'rxjs';
 
 import { FormUtilsService } from '../../shared/services/form-utils/form-utils.service';
 import PacienteMapper from '../../shared/services/mappers/pacients-mapper';
-import { PacienteService } from '../../shared/services/paciente/paciente.service';
 import { SheetsService } from '../../shared/services/sheets/sheets.service';
 import { ResultTableComponent } from '../../components/result-table/result-table.component';
 import { IPaciente } from '../../shared/model/commom.model';
@@ -68,26 +68,25 @@ export default class PacienteFormComponent implements OnInit {
   private readonly _sheetSvc = inject(SheetsService);
   private readonly _snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
-  private uniqueFieldValues: Record<string, number> = {};
   private atendimentoList: number[] = [];
-
   private readonly _pacienteSvc = inject(PacienteService);
   public _formUtilsSvc = inject(FormUtilsService);
-
   public filteredOptions!: string[];
   public patologies: string[] = [];
   public isLoading = this._sheetSvc.isLoading;
   public form!: FormGroup;
   public totalApache = new BehaviorSubject(0);
-  route = inject(ActivatedRoute);
-  paciente: IPaciente | undefined;
+  private readonly route = inject(ActivatedRoute);
+  public paciente: IPaciente | undefined;
+  private lineId!: number | undefined;
+  private soma: number | null = null;
 
   ngOnInit(): void {
     this.getPatology();
     this.getTreatments();
     this._pacienteSvc.fetchTreatments();
     const pacienteData = this.route.snapshot.data['paciente'].values;
-
+    this.route.params.subscribe((params) => (this.lineId = +params['lineId']));
     const paciente: IPaciente =
       pacienteData && pacienteData.length > 0
         ? {
@@ -141,9 +140,18 @@ export default class PacienteFormComponent implements OnInit {
             criticalHealth: '',
           };
     this.initializeForm(paciente);
+    this.lineId = this.route.snapshot.params['lineId']
+      ? +this.route.snapshot.params['lineId']
+      : undefined;
+    this.calcularSoma();
+
+    this.form.valueChanges.subscribe(() => {
+      this.calcularSoma();
+    });
+    this.monitorFieldChanges();
   }
 
-  initializeForm(paciente: IPaciente): void {
+  private initializeForm(paciente: IPaciente): void {
     this.form = this.fb.group({
       atendimento: [paciente.atendimento, [Validators.required]],
       age: [paciente.idade, [Validators.required]],
@@ -189,35 +197,81 @@ export default class PacienteFormComponent implements OnInit {
   public onSubmit() {
     if (this.form.valid) {
       this.isLoading.set(true);
+      this.calcularSoma();
+      this.updateTotalApacheInForm();
       const formData = this.form.value;
-      this._pacienteSvc.createPaciente(formData).subscribe({
-        next: () => this.onSuccess(),
-        error: (error) => {
-          const errorMessage = error?.error?.error ?? 'Erro ao criar usuário';
-          this.onError(errorMessage);
-        },
-      });
-      setTimeout(() => {
-        this.isLoading.set(false);
-        this.router.navigate(['']);
-      }, 3000);
+      const values = PacienteMapper.formatFormData(formData).values;
+      if (this.lineId !== undefined) {
+        const dataToUpdate = {
+          lineId: this.lineId,
+          values: values,
+        };
+        this._pacienteSvc.updatePaciente(dataToUpdate).subscribe({
+          next: () => {
+            this._snackBar.open('Paciente atualizado com sucesso', '', {
+              duration: 2000,
+            });
+            this.router.navigate(['']);
+          },
+          error: (error) => {
+            const errorMessage =
+              error?.error?.error ?? 'Erro ao atualizar paciente';
+            this._snackBar.open(errorMessage, 'x', { duration: 3000 });
+          },
+        });
+      } else {
+        this._pacienteSvc.createPaciente(formData).subscribe({
+          next: () => this.onSuccess(),
+          error: (error) => {
+            const errorMessage = error?.error?.error ?? 'Erro ao criar usuário';
+            this.onError(errorMessage);
+          },
+        });
+        setTimeout(() => {
+          this.isLoading.set(false);
+          this.router.navigate(['']);
+        }, 3000);
+      }
     } else {
       this._formUtilsSvc.validateAllFormFields(this.form);
     }
   }
 
-  public onSelectionChange(event: any, controlName: string) {
-    const value = parseInt(event?.value);
-    if (!isNaN(value)) {
-      this.uniqueFieldValues[controlName] = value;
-      this.totalApache.next(
-        Object.values(this.uniqueFieldValues).reduce(
-          (acc, val) => acc + val,
-          0,
-        ),
-      );
-      this.updateTotalApacheInForm();
-    }
+  private readonly fieldsToMonitor = [
+    'temperatura',
+    'pressao',
+    'freqCardiaca',
+    'freqRespiratoria',
+    'pao2',
+    'phOrHco3',
+    'sodio',
+    'potassio',
+    'creatinina',
+    'hematocrito',
+    'leucocitos',
+    'glasgow',
+    'ageApache',
+    'criticalHealth',
+  ];
+
+  private monitorFieldChanges(): void {
+    this.fieldsToMonitor.forEach((field) => {
+      this.form.get(field)?.valueChanges.subscribe(() => {
+        this.calcularSoma();
+      });
+    });
+  }
+
+  private calcularSoma() {
+    this.soma = this.sumFields();
+    this.totalApache.next(this.soma);
+  }
+
+  private sumFields(): number {
+    return this.fieldsToMonitor.reduce((sum, field) => {
+      const valor = +this.form.get(field)?.value || 0;
+      return sum + valor;
+    }, 0);
   }
 
   public onOptionSelected(event: MatAutocompleteSelectedEvent) {
@@ -231,11 +285,11 @@ export default class PacienteFormComponent implements OnInit {
   public onBlur(fieldName: string): void {
     const fieldValue = this.form.get(fieldName)?.value;
     if (fieldName === 'atendimento') {
-      this.validateAtendimentoUniqueness(Number(fieldValue));
+      this.validateAtendimentoUniquenes(Number(fieldValue));
     }
   }
 
-  private validateAtendimentoUniqueness(atendimento: number): void {
+  private validateAtendimentoUniquenes(atendimento: number): void {
     if (this.atendimentoList.includes(atendimento)) {
       this.form.get('atendimento')?.setErrors({ duplicate: true });
       this.onError('Atendimento já cadastrado');
