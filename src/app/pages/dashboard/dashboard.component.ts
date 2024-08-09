@@ -58,7 +58,6 @@ export default class DashboardComponent implements OnInit {
 
   public onEdit(lineId: number): void {
     const index = lineId + 2 + this.pageIndex * this.pageSize;
-    console.log(index);
     this.router.navigate(['edit', index]);
   }
 

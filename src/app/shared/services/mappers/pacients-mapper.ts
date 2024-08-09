@@ -92,8 +92,10 @@ export default class PacienteMapper {
   }
 
   static formatFormData(formData: any): any {
-    if (formData.glim && formData.internacao) {
+    if (formData.glim && typeof formData.glim === 'object') {
       formData.glim = this.formatDate(formData.glim);
+    }
+    if (formData.internacao && typeof formData.internacao === 'object') {
       formData.internacao = this.formatDate(formData.internacao);
     }
 

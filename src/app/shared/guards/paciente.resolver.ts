@@ -11,7 +11,6 @@ export const pacienteResolver: ResolveFn<IPaciente> = (
   const _sheetSvc = inject(SheetsService);
   if (route?.params['lineId']) {
     const lineId = Number(route.params['lineId']);
-    console.log('lineId:', lineId);
     return _sheetSvc.findRow(lineId);
   }
   return of({
