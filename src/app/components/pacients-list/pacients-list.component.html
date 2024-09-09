@@ -4,9 +4,14 @@
     <mat-cell *matCellDef="let element"> {{ element.atendimento }} </mat-cell>
   </ng-container>
 
-  <ng-container matColumnDef="idade">
-    <mat-header-cell *matHeaderCellDef> Idade </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{ element.idade }} </mat-cell>
+  <ng-container matColumnDef="risco">
+    <mat-header-cell *matHeaderCellDef> Risco </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{ element.risco }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="cirurgico">
+    <mat-header-cell *matHeaderCellDef> Cirurgico </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{ element.cirurgico }} </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="patologia">
@@ -16,31 +21,16 @@
 
   <ng-container matColumnDef="actions">
     <mat-header-cell *matHeaderCellDef class="action-column">
-      <button
-        mat-mini-fab
-        color="accent"
-        aria-label="Adicionar paciente"
-        (click)="onAdd()"
-        class="action-column-header"
-      >
+      <button mat-mini-fab color="accent" aria-label="Adicionar paciente" (click)="onAdd()"
+        class="action-column-header">
         <mat-icon>add</mat-icon>
       </button>
     </mat-header-cell>
     <mat-cell *matCellDef="let element; let i = index" class="action-group">
-      <button
-        mat-icon-button
-        color="primary"
-        aria-label="Editar paciente"
-        (click)="onEdit(i)"
-      >
+      <button mat-icon-button color="primary" aria-label="Editar paciente" (click)="onEdit(i)">
         <mat-icon>edit </mat-icon>
       </button>
-      <button
-        mat-icon-button
-        color="warn"
-        aria-label="Remover paciente"
-        (click)="onDelete(i)"
-      >
+      <button mat-icon-button color="warn" aria-label="Remover paciente" (click)="onDelete(i)">
         <mat-icon>delete</mat-icon>
       </button>
     </mat-cell>

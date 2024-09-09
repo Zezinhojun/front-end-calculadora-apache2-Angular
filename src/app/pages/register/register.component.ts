@@ -23,6 +23,7 @@ import { FormUserComponent } from './../../components/form-user/form-user.compon
 })
 export default class RegisterComponent {
   title = 'Cadastro';
+
   fields: IFormFieldConfig[] = [
     {
       label: 'Nome',

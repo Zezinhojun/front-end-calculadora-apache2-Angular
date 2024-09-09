@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
+
 import PacienteMapper from '../../shared/services/mappers/pacients-mapper';
+import { MaterialModule } from '../../shared/material/material.module';
 
 export interface TabelaAPache {
   pontos: string;
@@ -11,7 +11,7 @@ export interface TabelaAPache {
 @Component({
   selector: 'app-result-table',
   standalone: true,
-  imports: [MatCardModule, MatTableModule],
+  imports: [MaterialModule],
   templateUrl: './result-table.component.html',
   styleUrl: './result-table.component.scss',
 })
@@ -41,7 +41,10 @@ export class ResultTableComponent {
       pontos: '25 - 29 pontos',
       mortalidade: ' 55% não cirúrgico, 35% pós-cirúrgico',
     },
-    { pontos: '30 - 34 pontos', mortalidade: ' Aprox. 73% ambos' },
+    {
+      pontos: '30 - 34 pontos',
+      mortalidade: ' Aprox. 73% ambos'
+    },
     {
       pontos: '35 - 100 pontos',
       mortalidade: '	85% não cirúrgico, 88% pós-cirúrgico',

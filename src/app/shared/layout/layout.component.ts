@@ -1,9 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
+import { MaterialModule } from '../material/material.module';
 import { AuthService } from '../services/auth/auth.service';
 
 @Component({
@@ -11,9 +9,7 @@ import { AuthService } from '../services/auth/auth.service';
   standalone: true,
   imports: [
     RouterOutlet,
-    MatIconModule,
-    MatButtonModule,
-    MatToolbarModule,
+    MaterialModule,
     RouterLink,
   ],
   templateUrl: './layout.component.html',

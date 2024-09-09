@@ -9,7 +9,7 @@ export interface User extends CommonFields {
   token?: string;
 }
 
-export interface LoginPayload extends CommonFields {}
+export interface LoginPayload extends CommonFields { }
 
 export interface RegisterPayload extends CommonFields {
   name: string;
@@ -31,9 +31,9 @@ export interface ISheetsResponse {
 }
 
 export interface IPaciente {
-  atendimento: number | string; // Pode ser número ou string
-  idade: number | string; // Pode ser número ou string
-  internacao?: Date | string | null; // internacao pode ser Date, string, ou null
+  atendimento: number | string;
+  idade: number | string;
+  internacao?: Date | string | null;
   patologia: string;
   glim: Date | string | null;
   dignosticoGlim: number | string;
@@ -54,4 +54,6 @@ export interface IPaciente {
   glasgow: number | string;
   ageApache: number | string;
   criticalHealth: number | string;
+  risco?: number | string | undefined
+  cirurgico?: number | string | undefined
 }

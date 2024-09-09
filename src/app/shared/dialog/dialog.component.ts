@@ -1,6 +1,5 @@
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -9,21 +8,20 @@ import {
   MatDialogRef,
   MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+
+import { MaterialModule } from '../material/material.module';
 
 
 @Component({
   selector: 'app-dialog',
   standalone: true,
   imports: [
+    MaterialModule,
     MatDialogContent,
     MatDialogActions,
     MatDialogClose,
-    MatFormFieldModule,
     FormsModule,
-    MatInputModule,
-    MatButtonModule,
+
     MatDialogTitle],
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.scss'

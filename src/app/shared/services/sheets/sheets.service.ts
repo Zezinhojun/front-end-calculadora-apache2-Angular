@@ -16,7 +16,7 @@ export class SheetsService implements ISheetService {
   public totalPages = signal<number>(0);
   public isLoading = signal<boolean>(false);
 
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient) { }
 
   findRow(lineId: number): Observable<IPaciente> {
     return this._http.get<IPaciente>(
@@ -50,6 +50,7 @@ export class SheetsService implements ISheetService {
             return response.values
               .map(PacienteMapper.fromSheetsResponse)
               .slice(page * pageSize, (page + 1) * pageSize);
+
           } else {
             return [];
           }

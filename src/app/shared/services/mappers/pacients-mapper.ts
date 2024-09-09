@@ -51,6 +51,15 @@ export default class PacienteMapper {
     const ageApache = values[21].toString();
     const glasgow = values[22].toString();
     const criticalHealth = values[23].toString();
+    let risco;
+    let cirurgico
+
+    const riscoValue = values[25];
+    riscoValue === 1 ? risco = "Sem desnutrição" : risco = "Desnutrido"
+
+    const cirurgicoValue = values[26]
+    cirurgicoValue === 1 ? cirurgico = "Cirurgico" : cirurgico = "Não cirurgico"
+
 
     let internacao: Date | null = null;
     if (values[3] && typeof values[3] === 'string') {
@@ -88,6 +97,8 @@ export default class PacienteMapper {
       glasgow,
       ageApache,
       criticalHealth,
+      risco,
+      cirurgico
     };
   }
 
@@ -130,5 +141,9 @@ export default class PacienteMapper {
         ],
       ],
     };
+  }
+
+  private filterNutritionStatus(value: number) {
+    return value === 1 ? 'Sem desnutrição' : 'Desnutrido'
   }
 }

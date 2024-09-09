@@ -1,15 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PacientsListComponent } from './pacients-list.component';
+import { MatTableModule } from '@angular/material/table';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('PacientsListComponent', () => {
   let component: PacientsListComponent;
   let fixture: ComponentFixture<PacientsListComponent>;
 
   beforeEach(async () => {
-    component = new PacientsListComponent();
     await TestBed.configureTestingModule({
-      declarations: [],
+      imports: [MatTableModule, PacientsListComponent],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   });
 
@@ -17,9 +19,7 @@ describe('PacientsListComponent', () => {
     fixture = TestBed.createComponent(PacientsListComponent);
     component = fixture.componentInstance;
     component.pacientes = [
-      { atendimento: 23214, idade: 30, patologia: 'Teste 1' },
-      { atendimento: 3456, idade: 45, patologia: 'Teste 2' },
-      { atendimento: 123213, idade: 50, patologia: 'Teste 3' },
+      { atendimento: 23214, risco: 'Sem desnutrição', cirurgico: 'Não cirúrgico', patologia: 'Teste 1' },
     ] as any;
     fixture.detectChanges();
   });
@@ -30,17 +30,10 @@ describe('PacientsListComponent', () => {
 
   it('should emit delete event when onDelete is called', () => {
     spyOn(component.delete, 'emit');
-    const testElement = { atendiment: 4433, name: 'Luciano' };
+    const testElement = { atendimento: 4433 };
     component.onDelete(testElement);
     expect(component.delete.emit).toHaveBeenCalledWith(testElement);
   });
-
-  // it("should emit edit event when onEdit is called", () => {
-  //   spyOn(component.edit, 'emit');
-  //   const testElement = { atendiment: 4433, name: "Luciano" }
-  //   component.onEdit(testElement)
-  //   expect(component.edit.emit).toHaveBeenCalledWith(testElement)
-  // })
 
   it('should emit add event when onAdd is called', () => {
     spyOn(component.add, 'emit');
@@ -49,10 +42,13 @@ describe('PacientsListComponent', () => {
   });
 
   it('should display patients correctly', () => {
-    const tableRow = fixture.nativeElement.querySelectorAll('mat-row');
-    expect(tableRow[0].textContent).toContain('23214');
-    expect(tableRow[0].textContent).toContain('30');
-    expect(tableRow[0].textContent).toContain('Teste 1');
-    expect(tableRow[1].textContent).toContain('3456');
+    fixture.detectChanges();
+    const tableRows = fixture.nativeElement.querySelectorAll('mat-row');
+
+    expect(tableRows.length).toBe(1, 'Should have one row for the single patient');
+    expect(tableRows[0].textContent).toContain('23214');
+    expect(tableRows[0].textContent).toContain('Sem desnutrição');
+    expect(tableRows[0].textContent).toContain('Não cirúrgico');
+    expect(tableRows[0].textContent).toContain('Teste 1');
   });
 });

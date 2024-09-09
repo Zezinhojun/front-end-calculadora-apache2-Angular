@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 import { PacientsListComponent } from '../../components/pacients-list/pacients-list.component';
+import { MaterialModule } from '../../shared/material/material.module';
 import { SheetsService } from '../../shared/services/sheets/sheets.service';
 import { DialogComponent } from './../../shared/dialog/dialog.component';
 
@@ -13,9 +13,8 @@ import { DialogComponent } from './../../shared/dialog/dialog.component';
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    MatPaginatorModule,
+    MaterialModule,
     PacientsListComponent,
-    MatProgressSpinnerModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
